@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './models/workout.dart';
+import './edit_lap_dialog.dart';
 
 class EditWorkout extends StatefulWidget {
   final Workout workout;
@@ -7,27 +8,49 @@ class EditWorkout extends StatefulWidget {
   EditWorkout({Key key, @required this.workout}) : super(key: key);
 
   @override
-  _EditWorkoutState createState() => _EditWorkoutState();
+  _EditWorkoutState createState() => _EditWorkoutState(this.workout.clone());
 }
 
 class _EditWorkoutState extends State<EditWorkout> {
+  Workout workout;
+
+  _EditWorkoutState(this.workout) : super();
+
   void _createLap() {
     setState(() {
-      widget.workout.lapItemList.add(LapItem());
+      this.workout.lapItemList.add(LapItem());
     });
   }
 
-  void _startEditLap(int lapIndex) {}
+  void _startEditLap(BuildContext context, int lapIndex) async {
+    LapItem input = await showTimerDialog(context, lapIndex);
+    if (input == null) return;
+
+    setState(() {
+      workout.lapItemList[lapIndex] = input;
+    });
+  }
+
   void _save(BuildContext context) {
     final snackBar =
         SnackBar(content: Text('Saved !!', style: TextStyle(fontSize: 24)));
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
+  Future<LapItem> showTimerDialog(BuildContext context, int lapIndex) {
+    final Widget dialog = EditLapDialog(lapItem: workout.lapItemList[lapIndex]);
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.workout.name), actions: [
+      appBar: AppBar(title: Text(workout.name), actions: [
         Builder(
           builder: (BuildContext context) {
             return RaisedButton.icon(
@@ -42,11 +65,11 @@ class _EditWorkoutState extends State<EditWorkout> {
       ]),
       body: Center(
         child: ListView(
-            children: widget.workout.lapItemList
+            children: workout.lapItemList
                 .asMap()
                 .entries
                 .map((e) => getLapItemWidget(
-                    e.key, e.value, () => {_startEditLap(e.key)}))
+                    e.key, e.value, () => {_startEditLap(context, e.key)}))
                 .toList()),
       ),
       floatingActionButton: FloatingActionButton(

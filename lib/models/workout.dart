@@ -3,6 +3,13 @@ class Workout {
   List<LapItem> lapItemList = [];
 
   Workout();
+
+  Workout clone() {
+    final ret = Workout();
+    ret.name = this.name;
+    ret.lapItemList = this.lapItemList.map((l) => l.clone()).toList();
+    return ret;
+  }
 }
 
 class LapGroup {
@@ -18,5 +25,12 @@ class LapItem {
   int rest = 15;
 
   LapItem();
-}
 
+  LapItem clone() {
+    final ret = LapItem();
+    ret.name = this.name;
+    ret.time = this.time;
+    ret.rest = this.rest;
+    return ret;
+  }
+}
