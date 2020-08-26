@@ -1,8 +1,8 @@
 class Workout {
-  String name = 'Workout';
-  List<LapItem> lapItemList = [];
+  String name;
+  List<LapItem> lapItemList;
 
-  Workout();
+  Workout({this.name = 'Workout', this.lapItemList = const []});
 
   Workout clone() {
     final ret = Workout();
@@ -13,18 +13,18 @@ class Workout {
 }
 
 class LapGroup {
-  int repetition = 1;
-  List<LapItem> lapItemList = [];
+  int repetition;
+  List<LapItem> lapItemList;
 
-  LapGroup();
+  LapGroup({this.repetition = 1, this.lapItemList = const []});
 }
 
 class LapItem {
-  String name = 'Lap';
-  int time = 45;
-  int rest = 15;
+  String name;
+  int time;
+  int rest;
 
-  LapItem({this.name, this.time, this.rest});
+  LapItem({this.name = 'Lap', this.time = 45, this.rest = 15});
 
   LapItem clone() {
     final ret = LapItem();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import './edit_workout.dart';
 import './models/workout.dart';
+import './store/workout_store.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,40 +11,35 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Timer Xrd',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
-    );
+    return ChangeNotifierProvider(
+        create: (_) => WorkoutStore(),
+        child: MaterialApp(
+          title: 'Timer Xrd',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: MyHomePage(),
+        ));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<Workout> workoutList = [];
-
-  void _createWorkout() {
-    setState(() {
-      workoutList.add(Workout());
-    });
-  }
-
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final workoutList =
+        context.select((WorkoutStore store) => store.workoutList);
     return Scaffold(
       body: Center(
           child: ListView(
-        children: workoutList.map((w) => getWorkoutWidget(context, w)).toList(),
+        children: workoutList
+            .asMap()
+            .entries
+            .map((e) => getWorkoutWidget(context, e.key, e.value))
+            .toList(),
       )),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createWorkout,
+        onPressed: Provider.of<WorkoutStore>(context).addWorkspace,
         tooltip: 'Create Workout',
         child: const Icon(Icons.add),
       ),
@@ -50,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Widget getWorkoutWidget(BuildContext context, Workout workout) {
+Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
   return Row(children: [
     Expanded(
       child: Column(children: [
@@ -67,7 +64,8 @@ Widget getWorkoutWidget(BuildContext context, Workout workout) {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditWorkout(workout: workout)));
+                builder: (context) =>
+                    EditWorkout(index: index, workout: workout)));
       },
       icon: const Icon(Icons.edit),
     )

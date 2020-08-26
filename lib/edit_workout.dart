@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import './edit_lap_dialog.dart';
 import './models/workout.dart';
+import './store/workout_store.dart';
 
 class EditWorkout extends StatefulWidget {
+  final int index;
   final Workout workout;
 
-  const EditWorkout({Key key, @required this.workout}) : super(key: key);
+  const EditWorkout({Key key, @required this.index, @required this.workout})
+      : super(key: key);
 
   @override
   _EditWorkoutState createState() => _EditWorkoutState();
@@ -36,6 +40,9 @@ class _EditWorkoutState extends State<EditWorkout> {
   }
 
   void _save(BuildContext context) {
+    Provider.of<WorkoutStore>(context, listen: false)
+        .updateWorkspace(widget.index, workout.clone());
+
     const snackBar =
         SnackBar(content: Text('Saved !!', style: TextStyle(fontSize: 24)));
     Scaffold.of(context).showSnackBar(snackBar);
