@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './edit_lap_dialog.dart';
+import './edit_name_dialog.dart';
 import './models/workout.dart';
 import './store/workout_store.dart';
 
@@ -39,6 +40,21 @@ class _EditWorkoutState extends State<EditWorkout> {
     });
   }
 
+  Future<void> _startEditName(BuildContext context) async {
+    final Widget dialog = EditNameDialog(name: workout.name);
+    final String next = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      },
+    );
+    if (next == null) return;
+
+    setState(() {
+      workout.name = next;
+    });
+  }
+
   void _save(BuildContext context) {
     Provider.of<WorkoutStore>(context, listen: false)
         .updateWorkspace(widget.index, workout.clone());
@@ -61,19 +77,30 @@ class _EditWorkoutState extends State<EditWorkout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(workout.name), actions: [
-        Builder(
-          builder: (BuildContext context) {
-            return RaisedButton.icon(
-              icon: const Icon(Icons.save),
-              label: const Text('SAVE'),
-              color: Colors.transparent,
-              textColor: Colors.white,
-              onPressed: () => _save(context),
-            );
-          },
-        ),
-      ]),
+      appBar: AppBar(
+          title: GestureDetector(
+            onTap: () {
+              _startEditName(context);
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.white))),
+              child: Text(workout.name),
+            ),
+          ),
+          actions: [
+            Builder(
+              builder: (BuildContext context) {
+                return RaisedButton.icon(
+                  icon: const Icon(Icons.save),
+                  label: const Text('SAVE'),
+                  color: Colors.transparent,
+                  textColor: Colors.white,
+                  onPressed: () => _save(context),
+                );
+              },
+            ),
+          ]),
       body: Center(
         child: ListView(
             children: workout.lapItemList
