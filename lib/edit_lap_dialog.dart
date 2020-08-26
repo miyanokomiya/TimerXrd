@@ -12,15 +12,15 @@ class EditLapDialog extends StatefulWidget {
 
 class _EditLapDialogState extends State<EditLapDialog> {
   final nameTextController = TextEditingController();
-  final timeTextController = TextEditingController();
-  final restTextController = TextEditingController();
+  int draftTime;
+  int draftRest;
 
   @override
   void initState() {
     super.initState();
     nameTextController.text = widget.lapItem.name;
-    timeTextController.text = widget.lapItem.time.toString();
-    restTextController.text = widget.lapItem.rest.toString();
+    draftTime = widget.lapItem.time;
+    draftRest = widget.lapItem.rest;
   }
 
   @override
@@ -33,22 +33,25 @@ class _EditLapDialogState extends State<EditLapDialog> {
         child: Text(localizations.cancelButtonLabel),
       ),
       FlatButton(
+        color: Colors.blue,
+        textColor: Colors.white,
         onPressed: () {
-          final String name = nameTextController.text;
-          final int time = int.tryParse(timeTextController.text);
-          final int rest = int.tryParse(restTextController.text);
-          final LapItem lapItem = LapItem();
-          lapItem.name = name;
-          lapItem.time = time;
-          lapItem.rest = rest;
-          Navigator.pop<LapItem>(context, lapItem);
+          Navigator.pop<LapItem>(
+              context,
+              LapItem(
+                name: nameTextController.text,
+                time: draftTime,
+                rest: draftRest,
+              ));
         },
         child: Text(localizations.okButtonLabel),
       ),
     ];
-    final AlertDialog dialog = AlertDialog(
-      title: const Text("Lap"),
-      content: Column(children: [
+
+    return AlertDialog(
+      title: const Text("Edit Lap"),
+      content: Form(
+          child: Column(children: [
         TextField(
           controller: nameTextController,
           decoration: const InputDecoration(
@@ -56,30 +59,54 @@ class _EditLapDialogState extends State<EditLapDialog> {
           ),
           keyboardType: TextInputType.text,
         ),
-        TextField(
-          controller: timeTextController,
-          decoration: const InputDecoration(
-            labelText: 'Time (sec)',
-          ),
-          keyboardType: TextInputType.number,
-        ),
-        TextField(
-          controller: restTextController,
-          decoration: const InputDecoration(
-            labelText: 'Rest (sec)',
-          ),
-          keyboardType: TextInputType.number,
-        ),
-      ]),
+        const Divider(),
+        getTimeSelectField('Time', draftTime, (int next) {
+          setState(() {
+            draftTime = next;
+          });
+        }),
+        const Divider(),
+        getTimeSelectField('Rest', draftRest, (int next) {
+          setState(() {
+            draftRest = next;
+          });
+        }),
+        const Divider(),
+      ])),
       actions: actions,
     );
-
-    return dialog;
   }
 
   @override
   void dispose() {
-    timeTextController.dispose();
+    nameTextController.dispose();
     super.dispose();
   }
+}
+
+final secondOptions = List.generate(15, (i) => (i + 1) * 5);
+
+Widget getTimeSelectField(
+    String label, int value, void Function(int val) onChanged) {
+  return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    Text(label),
+    DropdownButton<int>(
+      value: value,
+      icon: const Icon(Icons.arrow_drop_down),
+      iconSize: 30,
+      elevation: 16,
+      style: const TextStyle(fontSize: 20, color: Colors.black),
+      underline: Container(
+        height: 2,
+        color: Colors.grey,
+      ),
+      onChanged: onChanged,
+      items: secondOptions.map<DropdownMenuItem<int>>((int value) {
+        return DropdownMenuItem<int>(
+          value: value,
+          child: Text('${value}s'),
+        );
+      }).toList(),
+    )
+  ]);
 }

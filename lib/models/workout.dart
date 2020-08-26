@@ -24,7 +24,7 @@ class LapItem {
   int time = 45;
   int rest = 15;
 
-  LapItem();
+  LapItem({this.name, this.time, this.rest});
 
   LapItem clone() {
     final ret = LapItem();
