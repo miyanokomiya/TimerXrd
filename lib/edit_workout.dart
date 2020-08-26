@@ -42,8 +42,7 @@ class _EditWorkoutState extends State<EditWorkout> {
   }
 
   Future<LapItem> showTimerDialog(BuildContext context, int lapIndex) {
-    final Widget dialog =
-        EditLapDialog(lapItem: workout.lapItemList[lapIndex]);
+    final Widget dialog = EditLapDialog(lapItem: workout.lapItemList[lapIndex]);
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -96,11 +95,10 @@ Widget getLapItemWidget(int index, LapItem lapItem, void Function() onEdit) {
             child: Column(children: [
               Row(children: [
                 Expanded(
-                  child: Text((index + 1).toString() + '. ' + lapItem.name,
-                      style: TextStyle(fontSize: 24)),
+                  child: Text('${index + 1}. ${lapItem.name}',
+                      style: const TextStyle(fontSize: 24)),
                 ),
-                Text(lapItem.time.toString() + 's',
-                    style: TextStyle(fontSize: 18)),
+                Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
               ]),
               const Divider(
                 color: Colors.black,
@@ -112,8 +110,8 @@ Widget getLapItemWidget(int index, LapItem lapItem, void Function() onEdit) {
                     margin: const EdgeInsets.only(right: 12),
                     child: const Text('Rest', style: TextStyle(fontSize: 18)),
                   ),
-                  Text(lapItem.rest.toString() + 's',
-                      style: TextStyle(fontSize: 18)),
+                  Text('${lapItem.rest} s',
+                      style: const TextStyle(fontSize: 18)),
                 ],
               )
             ]),

@@ -6,8 +6,8 @@ class Workout {
 
   Workout clone() {
     final ret = Workout();
-    ret.name = this.name;
-    ret.lapItemList = this.lapItemList.map((l) => l.clone()).toList();
+    ret.name = name;
+    ret.lapItemList = lapItemList.map((l) => l.clone()).toList();
     return ret;
   }
 }
@@ -28,9 +28,9 @@ class LapItem {
 
   LapItem clone() {
     final ret = LapItem();
-    ret.name = this.name;
-    ret.time = this.time;
-    ret.rest = this.rest;
+    ret.name = name;
+    ret.time = time;
+    ret.rest = rest;
     return ret;
   }
 }
