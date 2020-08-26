@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
-import './models/workout.dart';
 import './edit_lap_dialog.dart';
+import './models/workout.dart';
 
 class EditWorkout extends StatefulWidget {
   final Workout workout;
 
-  EditWorkout({Key key, @required this.workout}) : super(key: key);
+  const EditWorkout({Key key, @required this.workout}) : super(key: key);
 
   @override
-  _EditWorkoutState createState() => _EditWorkoutState(this.workout.clone());
+  _EditWorkoutState createState() => _EditWorkoutState();
 }
 
 class _EditWorkoutState extends State<EditWorkout> {
   Workout workout;
 
-  _EditWorkoutState(this.workout) : super();
+  @override
+  void initState() {
+    super.initState();
+    workout = widget.workout.clone();
+  }
 
   void _createLap() {
     setState(() {
-      this.workout.lapItemList.add(LapItem());
+      workout.lapItemList.add(LapItem());
     });
   }
 
-  void _startEditLap(BuildContext context, int lapIndex) async {
-    LapItem input = await showTimerDialog(context, lapIndex);
+  Future<void> _startEditLap(BuildContext context, int lapIndex) async {
+    final input = await showTimerDialog(context, lapIndex);
     if (input == null) return;
 
     setState(() {
@@ -32,13 +36,14 @@ class _EditWorkoutState extends State<EditWorkout> {
   }
 
   void _save(BuildContext context) {
-    final snackBar =
+    const snackBar =
         SnackBar(content: Text('Saved !!', style: TextStyle(fontSize: 24)));
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   Future<LapItem> showTimerDialog(BuildContext context, int lapIndex) {
-    final Widget dialog = EditLapDialog(lapItem: workout.lapItemList[lapIndex]);
+    final Widget dialog =
+        EditLapDialog(lapItem: workout.lapItemList[lapIndex]);
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -54,8 +59,8 @@ class _EditWorkoutState extends State<EditWorkout> {
         Builder(
           builder: (BuildContext context) {
             return RaisedButton.icon(
-              icon: Icon(Icons.save),
-              label: Text('SAVE'),
+              icon: const Icon(Icons.save),
+              label: const Text('SAVE'),
               color: Colors.transparent,
               textColor: Colors.white,
               onPressed: () => _save(context),
@@ -75,20 +80,19 @@ class _EditWorkoutState extends State<EditWorkout> {
       floatingActionButton: FloatingActionButton(
         onPressed: _createLap,
         tooltip: 'Create Workout',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-Widget getLapItemWidget(int index, LapItem lapItem, Function onEdit) {
+Widget getLapItemWidget(int index, LapItem lapItem, void Function() onEdit) {
   return Container(
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.black))),
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
       child: Row(children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Column(children: [
               Row(children: [
                 Expanded(
@@ -98,15 +102,15 @@ Widget getLapItemWidget(int index, LapItem lapItem, Function onEdit) {
                 Text(lapItem.time.toString() + 's',
                     style: TextStyle(fontSize: 18)),
               ]),
-              Divider(
+              const Divider(
                 color: Colors.black,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(right: 12),
-                    child: Text('Rest', style: TextStyle(fontSize: 18)),
+                    margin: const EdgeInsets.only(right: 12),
+                    child: const Text('Rest', style: TextStyle(fontSize: 18)),
                   ),
                   Text(lapItem.rest.toString() + 's',
                       style: TextStyle(fontSize: 18)),
@@ -118,7 +122,7 @@ Widget getLapItemWidget(int index, LapItem lapItem, Function onEdit) {
         IconButton(
           color: Colors.lightBlue,
           onPressed: onEdit,
-          icon: Icon(Icons.edit),
+          icon: const Icon(Icons.edit),
         )
       ]));
 }

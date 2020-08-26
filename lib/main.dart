@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './models/workout.dart';
 import './edit_workout.dart';
+import './models/workout.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _createWorkout() {
     setState(() {
-      this.workoutList.add(Workout());
+      workoutList.add(Workout());
     });
   }
 
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _createWorkout,
         tooltip: 'Create Workout',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -56,12 +56,12 @@ Widget getWorkoutWidget(BuildContext context, Workout workout) {
       child: Column(children: [
         Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.all(12),
-            child: Text(workout.name, style: TextStyle(fontSize: 24)))
+            padding: const EdgeInsets.all(12),
+            child: Text(workout.name, style: const TextStyle(fontSize: 24)))
       ]),
     ),
     IconButton(
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20.0),
       color: Colors.lightBlue,
       onPressed: () {
         Navigator.push(
@@ -69,7 +69,7 @@ Widget getWorkoutWidget(BuildContext context, Workout workout) {
             MaterialPageRoute(
                 builder: (context) => EditWorkout(workout: workout)));
       },
-      icon: Icon(Icons.edit),
+      icon: const Icon(Icons.edit),
     )
   ]);
 }
