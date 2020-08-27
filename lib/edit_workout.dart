@@ -7,10 +7,8 @@ import './store/workout_store.dart';
 
 class EditWorkout extends StatefulWidget {
   final int index;
-  final Workout workout;
 
-  const EditWorkout({Key key, @required this.index, @required this.workout})
-      : super(key: key);
+  const EditWorkout({Key key, @required this.index}) : super(key: key);
 
   @override
   _EditWorkoutState createState() => _EditWorkoutState();
@@ -22,7 +20,11 @@ class _EditWorkoutState extends State<EditWorkout> {
   @override
   void initState() {
     super.initState();
-    workout = widget.workout.clone();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        workout = context.read<WorkoutStore>().workoutList[widget.index].clone();
+      });
+    });
   }
 
   void _createLap() {
@@ -76,6 +78,8 @@ class _EditWorkoutState extends State<EditWorkout> {
 
   @override
   Widget build(BuildContext context) {
+    if (workout == null) return Scaffold(body: Container());
+
     return Scaffold(
       appBar: AppBar(
           title: GestureDetector(

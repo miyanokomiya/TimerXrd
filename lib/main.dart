@@ -61,11 +61,8 @@ Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
       padding: const EdgeInsets.all(20.0),
       color: Colors.lightBlue,
       onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    EditWorkout(index: index, workout: workout)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditWorkout(index: index)));
       },
       icon: const Icon(Icons.edit),
     )
