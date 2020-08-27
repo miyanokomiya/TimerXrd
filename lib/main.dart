@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './edit_workout.dart';
 import './models/workout.dart';
+import './show_workout.dart';
 import './store/workout_store.dart';
 
 void main() {
@@ -48,23 +48,17 @@ class MyHomePage extends StatelessWidget {
 }
 
 Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
-  return Row(children: [
-    Expanded(
-      child: Column(children: [
-        Container(
+  return Card(
+    child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ShowWorkoutPage(index: index)));
+        },
+        child: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.all(12),
-            child: Text(workout.name, style: const TextStyle(fontSize: 24)))
-      ]),
-    ),
-    IconButton(
-      padding: const EdgeInsets.all(20.0),
-      color: Colors.lightBlue,
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditWorkout(index: index)));
-      },
-      icon: const Icon(Icons.edit),
-    )
-  ]);
+            child: Text(workout.name, style: const TextStyle(fontSize: 24)))),
+  );
 }

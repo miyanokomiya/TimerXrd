@@ -98,7 +98,7 @@ class _EditWorkoutState extends State<EditWorkout> {
                 return RaisedButton.icon(
                   icon: const Icon(Icons.save),
                   label: const Text('SAVE'),
-                  color: Colors.transparent,
+                  color: Colors.green,
                   textColor: Colors.white,
                   onPressed: () => _save(context),
                 );
