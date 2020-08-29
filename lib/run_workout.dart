@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './models/workout.dart';
@@ -19,6 +20,7 @@ enum LapState {
 }
 
 class _RunWorkoutPageState extends State<RunWorkoutPage> {
+  static const int stepMS = 20;
   Workout workout;
   int lapIndex;
   double time;
@@ -28,6 +30,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   LapItem get currentLap => workout.lapItemList.length > lapIndex
       ? workout.lapItemList[lapIndex]
       : null;
+
   LapItem get nextLap => workout.lapItemList.length > lapIndex + 1
       ? workout.lapItemList[lapIndex + 1]
       : null;
@@ -37,19 +40,16 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        lapIndex = 0;
         workout =
             context.read<WorkoutStore>().workoutList[widget.index].clone();
-        time = currentLap.time.toDouble();
-        lapState = LapState.work;
-        _play();
+        _restart();
       });
     });
   }
 
   void _onTimer(Timer timer) {
     setState(() {
-      time -= 0.1;
+      time -= stepMS / 1000;
       if (time < 0) {
         if (lapState == LapState.work) {
           lapState = LapState.rest;
@@ -77,9 +77,18 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void _play() {
     setState(() {
       timer = Timer.periodic(
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: stepMS),
         _onTimer,
       );
+    });
+  }
+
+  void _restart() {
+    setState(() {
+      lapIndex = 0;
+      time = currentLap.time.toDouble();
+      lapState = LapState.work;
+      _play();
     });
   }
 
@@ -88,14 +97,21 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     if (workout == null) return Scaffold(body: Container());
     if (currentLap == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(workout.name),
-        ),
-        body: Center(
-            child: Column(children: const [
-          Text('Completed !!'),
-        ])),
-      );
+          appBar: AppBar(
+            title: Text(workout.name),
+          ),
+          body: Center(
+              child: Column(children: const [
+            Padding(
+              padding: EdgeInsets.only(top: 16.0),
+              child: Text('Completed !!', style: TextStyle(fontSize: 36)),
+            ),
+          ])),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _restart,
+            tooltip: 'Restart',
+            child: const Icon(Icons.repeat),
+          ));
     }
 
     return Scaffold(
@@ -104,9 +120,27 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         ),
         body: Center(
             child: Column(children: [
-          Text(currentLap.name),
-          Text(lapState == LapState.work ? 'Work' : 'Rest'),
-          Text(time.toStringAsFixed(1))
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Text(currentLap.name, style: const TextStyle(fontSize: 36)),
+          ),
+          Text(lapState == LapState.work ? 'Work' : 'Rest',
+              style: const TextStyle(fontSize: 24)),
+          getCountDownWidget(
+              lapState,
+              lapState == LapState.work ? currentLap.time : currentLap.rest,
+              time),
+          Column(
+            children: nextLap == null
+                ? []
+                : [
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text('Next: ${nextLap.name}',
+                          style: const TextStyle(fontSize: 24)),
+                    ),
+                  ],
+          )
         ])),
         floatingActionButton: timer.isActive
             ? FloatingActionButton(
@@ -120,4 +154,43 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 child: const Icon(Icons.play_arrow),
               ));
   }
+}
+
+Widget getCountDownWidget(LapState state, int range, double current) {
+  return CustomPaint(
+      painter: CirclePainter(
+          radian: (current / range) * 2 * pi,
+          color: state == LapState.work ? Colors.green : Colors.blue),
+      child: Container(
+          height: 200,
+          child: Center(
+              child: Text(
+            current.toStringAsFixed(1),
+            style: const TextStyle(fontSize: 24),
+          ))));
+}
+
+class CirclePainter extends CustomPainter {
+  final double radian;
+  final Color color;
+
+  CirclePainter({@required this.radian, this.color = Colors.green}) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const radius = 150.0;
+    final center = Offset(size.width / 2, size.height / 2);
+
+    canvas.drawArc(
+        Rect.fromCenter(center: center, height: radius, width: radius),
+        0,
+        radian,
+        true,
+        Paint()..color = color);
+
+    canvas.drawCircle(center, radius - 100.0, Paint()..color = Colors.white);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
