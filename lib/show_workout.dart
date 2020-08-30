@@ -48,7 +48,8 @@ class _ShowWorkoutPageState extends State<ShowWorkoutPage> {
                   builder: (context) => RunWorkoutPage(index: widget.index)));
         },
         tooltip: 'Run',
-        child: const Icon(Icons.play_arrow),
+        backgroundColor: Colors.red,
+        child: const Icon(Icons.play_arrow, size: 36),
       ),
     );
   }

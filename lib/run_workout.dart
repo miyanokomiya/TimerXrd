@@ -104,12 +104,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               child: Column(children: const [
             Padding(
               padding: EdgeInsets.only(top: 16.0),
-              child: Text('Completed !!', style: TextStyle(fontSize: 36)),
+              child: Text('Good Job!!!', style: TextStyle(fontSize: 36)),
             ),
           ])),
           floatingActionButton: FloatingActionButton(
             onPressed: _restart,
             tooltip: 'Restart',
+            backgroundColor: Colors.red,
             child: const Icon(Icons.repeat),
           ));
     }
@@ -146,12 +147,14 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             ? FloatingActionButton(
                 onPressed: _pause,
                 tooltip: 'Pause',
+                backgroundColor: Colors.grey,
                 child: const Icon(Icons.pause),
               )
             : FloatingActionButton(
                 onPressed: _play,
                 tooltip: 'Play',
-                child: const Icon(Icons.play_arrow),
+                backgroundColor: Colors.red,
+                child: const Icon(Icons.play_arrow, size: 36),
               ));
   }
 }

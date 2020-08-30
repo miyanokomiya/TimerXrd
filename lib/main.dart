@@ -27,38 +27,63 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final workoutList =
-        context.select((WorkoutStore store) => store.workoutList);
-    return Scaffold(
-      body: Center(
-          child: ListView(
-        children: workoutList
-            .asMap()
-            .entries
-            .map((e) => getWorkoutWidget(context, e.key, e.value))
-            .toList(),
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: Provider.of<WorkoutStore>(context).addWorkspace,
-        tooltip: 'Create Workout',
-        child: const Icon(Icons.add),
-      ),
-    );
+    return FutureBuilder(
+        future: Provider.of<WorkoutStore>(context, listen: false).loadValue(),
+        builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Timer Xrd'),
+              ),
+              body: const Center(
+                  child:
+                      Text('Failed to load.', style: TextStyle(fontSize: 36))),
+            );
+          }
+
+          final workoutList =
+              ctx.select((WorkoutStore store) => store.workoutList);
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Timer Xrd'),
+            ),
+            body: Center(
+                child: ListView(
+                    children: workoutList
+                        .asMap()
+                        .entries
+                        .map((e) => getWorkoutWidget(ctx, e.key, e.value))
+                        .toList())),
+            floatingActionButton: FloatingActionButton(
+              onPressed: Provider.of<WorkoutStore>(context).addWorkspace,
+              tooltip: 'Create Workout',
+              child: const Icon(Icons.add),
+            ),
+          );
+        });
   }
 }
 
 Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
   return Card(
-    child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ShowWorkoutPage(index: index)));
-        },
-        child: Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(12),
-            child: Text(workout.name, style: const TextStyle(fontSize: 24)))),
-  );
+      child: Container(
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
+          child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ShowWorkoutPage(index: index)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(workout.name, style: const TextStyle(fontSize: 24)),
+                    Text(workout.totalTimeText,
+                        style: const TextStyle(fontSize: 16)),
+                  ],
+                ),
+              ))));
 }

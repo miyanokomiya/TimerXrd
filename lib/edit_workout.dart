@@ -22,7 +22,8 @@ class _EditWorkoutState extends State<EditWorkout> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        workout = context.read<WorkoutStore>().workoutList[widget.index].clone();
+        workout =
+            context.read<WorkoutStore>().workoutList[widget.index].clone();
       });
     });
   }
@@ -57,13 +58,22 @@ class _EditWorkoutState extends State<EditWorkout> {
     });
   }
 
-  void _save(BuildContext context) {
-    Provider.of<WorkoutStore>(context, listen: false)
-        .updateWorkspace(widget.index, workout.clone());
-
-    const snackBar =
-        SnackBar(content: Text('Saved !!', style: TextStyle(fontSize: 24)));
-    Scaffold.of(context).showSnackBar(snackBar);
+  void _save(BuildContext context) async {
+    try {
+      await Provider.of<WorkoutStore>(context, listen: false)
+          .updateWorkspace(widget.index, workout.clone());
+      Scaffold.of(context).showSnackBar(const SnackBar(
+          content: Text('Saved !!', style: TextStyle(fontSize: 24))));
+    } catch (_) {
+      Scaffold.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          'Failed to save.',
+          style: TextStyle(fontSize: 24),
+        ),
+        backgroundColor: Colors.red,
+      ));
+      rethrow;
+    }
   }
 
   Future<LapItem> showTimerDialog(BuildContext context, int lapIndex) {
@@ -116,7 +126,7 @@ class _EditWorkoutState extends State<EditWorkout> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _createLap,
-        tooltip: 'Create Workout',
+        tooltip: 'Create Lap',
         child: const Icon(Icons.add),
       ),
     );

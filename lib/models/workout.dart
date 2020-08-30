@@ -13,6 +13,17 @@ class Workout {
     name = map['name'] as String;
   }
 
+  int get totalTime => lapItemList
+      .map((e) => e.time + e.rest)
+      .reduce((value, element) => value + element);
+
+  String get totalTimeText {
+    final time = totalTime;
+    final m = (time / 60).floor();
+    final s = time % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
   Workout clone() {
     return Workout(
         id: id,
@@ -40,7 +51,7 @@ class LapItem {
   int time;
   int rest;
 
-  LapItem({this.name = 'Lap', this.time = 45, this.rest = 15});
+  LapItem({this.name = 'New Lap', this.time = 45, this.rest = 15});
 
   LapItem.fromMap(Map map) {
     name = map['name'] as String;

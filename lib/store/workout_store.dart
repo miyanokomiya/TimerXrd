@@ -4,11 +4,8 @@ import '../models/workout.dart';
 class WorkoutStore with ChangeNotifier {
   List<Workout> workoutList = [];
 
-  WorkoutStore() : super() {
-    loadValue();
-  }
-
   Future<void> loadValue() async {
+    debugPrint('loadValue');
     final db = await getDataBase();
     final List<Map> maps = await db.rawQuery('SELECT * FROM workout');
     final List<Map> lapItemMaps =
@@ -25,15 +22,15 @@ class WorkoutStore with ChangeNotifier {
               .toList());
     });
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> addWorkspace() async {
     final workout = Workout(
       name: 'New Workout',
       lapItemList: [
-        LapItem(name: 'New Lap'),
-        LapItem(name: 'New Lap'),
+        LapItem(),
+        LapItem(),
       ],
     );
 
@@ -54,7 +51,6 @@ class WorkoutStore with ChangeNotifier {
   }
 
   Future<void> updateWorkspace(int itemIndex, Workout workout) async {
-    print(workout.id);
     final db = await getDataBase();
     await db.transaction((txn) async {
       await txn.update('Workout', workout.toMap(),
