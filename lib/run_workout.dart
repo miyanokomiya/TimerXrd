@@ -3,8 +3,12 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audio_cache.dart';
 import './models/workout.dart';
 import './store/workout_store.dart';
+
+AudioCache _player = AudioCache();
 
 class RunWorkoutPage extends StatefulWidget {
   final int id;
@@ -30,6 +34,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   double time;
   Timer timer;
   LapState lapState;
+  AudioPlayer _ap;
 
   LapItem get currentLap => workout.lapItemList.length > lapIndex
       ? workout.lapItemList[lapIndex]
@@ -58,12 +63,18 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void dispose() {
     super.dispose();
     timer?.cancel();
+    _ap?.stop();
   }
 
   void _onTimer(Timer timer) {
     setState(() {
       time -= stepMS / 1000;
-      if (time < 0) {
+      // 3.2 looks good timing
+      if ((time - 3.2).abs() < 0.01) {
+        _player
+            .play('sounds/countdown.mp3', volume: 1.4)
+            .then((value) => _ap = value);
+      } else if (time < 0) {
         switch (lapState) {
           case LapState.ready:
             lapState = LapState.work;
