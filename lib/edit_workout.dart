@@ -34,6 +34,23 @@ class _EditWorkoutState extends State<EditWorkout> {
     });
   }
 
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      var adjustedNextIndex = newIndex;
+      if (newIndex > oldIndex) {
+        adjustedNextIndex -= 1;
+      }
+      final item = workout.lapItemList.removeAt(oldIndex);
+      workout.lapItemList.insert(adjustedNextIndex, item);
+    });
+  }
+
+  void _deleteLap(BuildContext context, int lapIndex) async {
+    setState(() {
+      workout.lapItemList.removeAt(lapIndex);
+    });
+  }
+
   Future<void> _startEditLap(BuildContext context, int lapIndex) async {
     final input = await showTimerDialog(context, lapIndex);
     if (input == null) return;
@@ -116,12 +133,17 @@ class _EditWorkoutState extends State<EditWorkout> {
             ),
           ]),
       body: Center(
-        child: ListView(
+        child: ReorderableListView(
+            onReorder: _onReorder,
             children: workout.lapItemList
                 .asMap()
                 .entries
                 .map((e) => getLapItemWidget(
-                    e.key, e.value, () => {_startEditLap(context, e.key)}))
+                      e.key,
+                      e.value,
+                      onEdit: () => {_startEditLap(context, e.key)},
+                      onDelete: (_) => {_deleteLap(context, e.key)},
+                    ))
                 .toList()),
       ),
       floatingActionButton: FloatingActionButton(
@@ -133,42 +155,49 @@ class _EditWorkoutState extends State<EditWorkout> {
   }
 }
 
-Widget getLapItemWidget(int index, LapItem lapItem, void Function() onEdit) {
-  return Container(
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
-      child: Row(children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: Column(children: [
-              Row(children: [
-                Expanded(
-                  child: Text('${index + 1}. ${lapItem.name}',
-                      style: const TextStyle(fontSize: 24)),
+Widget getLapItemWidget(int index, LapItem lapItem,
+    {@required void Function() onEdit,
+    @required void Function(DismissDirection direction) onDelete}) {
+  return Dismissible(
+      background: Container(color: Colors.red),
+      key: Key(lapItem.key),
+      onDismissed: onDelete,
+      child: Container(
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Expanded(
+                child: Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${index + 1}. ${lapItem.name}',
+                          style: const TextStyle(fontSize: 24)),
+                      Text('${lapItem.time} s',
+                          style: const TextStyle(fontSize: 18)),
+                    ]),
+                const Divider(
+                  color: Colors.black,
                 ),
-                Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      child: const Text('Rest', style: TextStyle(fontSize: 18)),
+                    ),
+                    Text('${lapItem.rest} s',
+                        style: const TextStyle(fontSize: 18)),
+                  ],
+                )
               ]),
-              const Divider(
-                color: Colors.black,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 12),
-                    child: const Text('Rest', style: TextStyle(fontSize: 18)),
-                  ),
-                  Text('${lapItem.rest} s',
-                      style: const TextStyle(fontSize: 18)),
-                ],
-              )
-            ]),
-          ),
-        ),
-        IconButton(
-          color: Colors.lightBlue,
-          onPressed: onEdit,
-          icon: const Icon(Icons.edit),
-        )
-      ]));
+            )),
+            IconButton(
+              color: Colors.lightBlue,
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit),
+            )
+          ])));
 }

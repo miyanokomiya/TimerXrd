@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 class Workout {
   int id;
@@ -46,17 +47,25 @@ class LapGroup {
   LapGroup({this.repetition = 1, this.lapItemList = const []});
 }
 
+final Uuid uuid = Uuid();
+
 class LapItem {
+  // tmp unique key
+  String key;
+
   String name;
   int time;
   int rest;
 
-  LapItem({this.name = 'New Lap', this.time = 45, this.rest = 15});
+  LapItem({this.name = 'New Lap', this.time = 45, this.rest = 15}) {
+    key = uuid.v4();
+  }
 
   LapItem.fromMap(Map map) {
     name = map['name'] as String;
     time = map['time'] as int;
     rest = map['rest'] as int;
+    key = uuid.v4();
   }
 
   LapItem clone() {
