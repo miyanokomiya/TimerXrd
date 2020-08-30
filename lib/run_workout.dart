@@ -124,7 +124,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               child: Column(children: [
             const Padding(
               padding: EdgeInsets.only(top: 16.0),
-              child: Text('Good Job!!!', style: TextStyle(fontSize: 36)),
+              child: Text('💪 Good Job 👍', style: TextStyle(fontSize: 36)),
             ),
             Expanded(
               child: ListView(
