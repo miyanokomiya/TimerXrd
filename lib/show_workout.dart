@@ -6,9 +6,9 @@ import './run_workout.dart';
 import './store/workout_store.dart';
 
 class ShowWorkoutPage extends StatefulWidget {
-  final int index;
+  final int id;
 
-  const ShowWorkoutPage({Key key, @required this.index}) : super(key: key);
+  const ShowWorkoutPage({Key key, @required this.id}) : super(key: key);
 
   @override
   _ShowWorkoutPageState createState() => _ShowWorkoutPageState();
@@ -17,8 +17,12 @@ class ShowWorkoutPage extends StatefulWidget {
 class _ShowWorkoutPageState extends State<ShowWorkoutPage> {
   @override
   Widget build(BuildContext context) {
-    final Workout workout =
-        context.select((WorkoutStore store) => store.workoutList[widget.index]);
+    final workout = context.select((WorkoutStore store) => store.workoutList
+        .firstWhere((element) => element.id == widget.id, orElse: () => null));
+
+    if (workout == null) {
+      return Scaffold(appBar: AppBar(title: const Text('No data')));
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(workout.name), actions: [
@@ -29,7 +33,7 @@ class _ShowWorkoutPageState extends State<ShowWorkoutPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => EditWorkout(index: widget.index)));
+                      builder: (context) => EditWorkout(id: widget.id)));
             })
       ]),
       body: Center(
@@ -45,10 +49,10 @@ class _ShowWorkoutPageState extends State<ShowWorkoutPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => RunWorkoutPage(index: widget.index)));
+                  builder: (context) => RunWorkoutPage(id: widget.id)));
         },
         tooltip: 'Run',
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.green,
         child: const Icon(Icons.play_arrow, size: 36),
       ),
     );

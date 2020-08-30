@@ -6,9 +6,9 @@ import './models/workout.dart';
 import './store/workout_store.dart';
 
 class RunWorkoutPage extends StatefulWidget {
-  final int index;
+  final int id;
 
-  const RunWorkoutPage({Key key, @required this.index}) : super(key: key);
+  const RunWorkoutPage({Key key, @required this.id}) : super(key: key);
 
   @override
   _RunWorkoutPageState createState() => _RunWorkoutPageState();
@@ -40,8 +40,11 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        workout =
-            context.read<WorkoutStore>().workoutList[widget.index].clone();
+        workout = context
+            .read<WorkoutStore>()
+            .workoutList
+            .firstWhere((element) => element.id == widget.id)
+            .clone();
         _restart();
       });
     });
@@ -110,7 +113,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
           floatingActionButton: FloatingActionButton(
             onPressed: _restart,
             tooltip: 'Restart',
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.green,
             child: const Icon(Icons.repeat),
           ));
     }
@@ -153,7 +156,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             : FloatingActionButton(
                 onPressed: _play,
                 tooltip: 'Play',
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.green,
                 child: const Icon(Icons.play_arrow, size: 36),
               ));
   }

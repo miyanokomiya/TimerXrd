@@ -25,7 +25,18 @@ class WorkoutStore with ChangeNotifier {
     // notifyListeners();
   }
 
-  Future<void> addWorkspace() async {
+  Future<void> removeWorkspace(int id) async {
+    final db = await getDataBase();
+    await db.transaction((txn) async {
+      await txn.delete('lap_item', where: 'workout_id = ?', whereArgs: [id]);
+      await txn.delete('Workout', where: 'id = ?', whereArgs: [id]);
+    });
+
+    workoutList = workoutList.where((element) => element.id != id).toList();
+    notifyListeners();
+  }
+
+  Future<Workout> addWorkspace() async {
     final workout = Workout(
       name: 'New Workout',
       lapItemList: [
@@ -48,9 +59,10 @@ class WorkoutStore with ChangeNotifier {
 
     workoutList.add(workout);
     notifyListeners();
+    return workout;
   }
 
-  Future<void> updateWorkspace(int itemIndex, Workout workout) async {
+  Future<void> updateWorkspace(int id, Workout workout) async {
     final db = await getDataBase();
     await db.transaction((txn) async {
       await txn.update('Workout', workout.toMap(),
@@ -66,6 +78,7 @@ class WorkoutStore with ChangeNotifier {
       });
       await batch.commit();
     });
+    final itemIndex = workoutList.indexWhere((element) => element.id == id);
     workoutList[itemIndex] = workout;
     notifyListeners();
   }

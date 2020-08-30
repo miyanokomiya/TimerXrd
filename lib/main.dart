@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './edit_workout.dart';
 import './models/workout.dart';
 import './show_workout.dart';
 import './store/workout_store.dart';
@@ -19,12 +20,36 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: MyHomePage(),
+          routes: <String, WidgetBuilder>{
+            '/': (_) => MyHomePage(),
+          },
         ));
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  Future<void> _addWorkspace(WorkoutStore store, BuildContext context) async {
+    Workout workout;
+    try {
+      workout = await store.addWorkspace();
+    } catch (_) {
+      Scaffold.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          'Failed to create.',
+          style: TextStyle(fontSize: 24),
+        ),
+        backgroundColor: Colors.red,
+      ));
+      rethrow;
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ShowWorkoutPage(id: workout.id)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => EditWorkout(id: workout.id)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -41,8 +66,8 @@ class MyHomePage extends StatelessWidget {
             );
           }
 
-          final workoutList =
-              ctx.select((WorkoutStore store) => store.workoutList);
+          final store = Provider.of<WorkoutStore>(context);
+          final workoutList = store.workoutList;
           return Scaffold(
             appBar: AppBar(
               title: const Text('Timer Xrd'),
@@ -52,19 +77,23 @@ class MyHomePage extends StatelessWidget {
                     children: workoutList
                         .asMap()
                         .entries
-                        .map((e) => getWorkoutWidget(ctx, e.key, e.value))
+                        .map((e) => getWorkoutWidget(ctx, e.value))
                         .toList())),
-            floatingActionButton: FloatingActionButton(
-              onPressed: Provider.of<WorkoutStore>(context).addWorkspace,
-              tooltip: 'Create Workout',
-              child: const Icon(Icons.add),
-            ),
+            floatingActionButton: Builder(builder: (BuildContext ctx) {
+              return FloatingActionButton(
+                onPressed: () {
+                  _addWorkspace(store, ctx);
+                },
+                tooltip: 'Create Workout',
+                child: const Icon(Icons.add),
+              );
+            }),
           );
         });
   }
 }
 
-Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
+Widget getWorkoutWidget(BuildContext context, Workout workout) {
   return Card(
       child: Container(
           decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
@@ -73,7 +102,7 @@ Widget getWorkoutWidget(BuildContext context, int index, Workout workout) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ShowWorkoutPage(index: index)));
+                        builder: (context) => ShowWorkoutPage(id: workout.id)));
               },
               child: Padding(
                 padding: const EdgeInsets.all(12),

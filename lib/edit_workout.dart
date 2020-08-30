@@ -6,9 +6,9 @@ import './models/workout.dart';
 import './store/workout_store.dart';
 
 class EditWorkout extends StatefulWidget {
-  final int index;
+  final int id;
 
-  const EditWorkout({Key key, @required this.index}) : super(key: key);
+  const EditWorkout({Key key, @required this.id}) : super(key: key);
 
   @override
   _EditWorkoutState createState() => _EditWorkoutState();
@@ -22,8 +22,12 @@ class _EditWorkoutState extends State<EditWorkout> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        workout =
-            context.read<WorkoutStore>().workoutList[widget.index].clone();
+        workout = context
+            .read<WorkoutStore>()
+            .workoutList
+            .firstWhere((element) => element.id == widget.id,
+                orElse: () => null)
+            .clone();
       });
     });
   }
@@ -75,10 +79,40 @@ class _EditWorkoutState extends State<EditWorkout> {
     });
   }
 
-  void _save(BuildContext context) async {
+  Future<void> _delete(BuildContext context) async {
+    final cancelButton = FlatButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: const Text("Cancel"),
+    );
+    final continueButton = FlatButton(
+      onPressed: () async {
+        await Provider.of<WorkoutStore>(context, listen: false)
+            .removeWorkspace(workout.id);
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+      },
+      child: const Text("Delete"),
+    ); // set up the AlertDialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm"),
+          content: const Text('Are you sure to delete this workout?'),
+          actions: [
+            cancelButton,
+            continueButton,
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _save(BuildContext context) async {
     try {
       await Provider.of<WorkoutStore>(context, listen: false)
-          .updateWorkspace(widget.index, workout.clone());
+          .updateWorkspace(widget.id, workout.clone());
       Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Saved !!', style: TextStyle(fontSize: 24))));
     } catch (_) {
@@ -108,50 +142,69 @@ class _EditWorkoutState extends State<EditWorkout> {
     if (workout == null) return Scaffold(body: Container());
 
     return Scaffold(
-      appBar: AppBar(
-          title: GestureDetector(
-            onTap: () {
-              _startEditName(context);
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.white))),
-              child: Text(workout.name),
-            ),
-          ),
-          actions: [
-            Builder(
-              builder: (BuildContext context) {
-                return RaisedButton.icon(
-                  icon: const Icon(Icons.save),
-                  label: const Text('SAVE'),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => _save(context),
-                );
+        appBar: AppBar(
+            title: GestureDetector(
+              onTap: () {
+                _startEditName(context);
               },
+              child: Container(
+                decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.white))),
+                child: Text(workout.name),
+              ),
             ),
-          ]),
-      body: Center(
-        child: ReorderableListView(
-            onReorder: _onReorder,
-            children: workout.lapItemList
-                .asMap()
-                .entries
-                .map((e) => getLapItemWidget(
-                      e.key,
-                      e.value,
-                      onEdit: () => {_startEditLap(context, e.key)},
-                      onDelete: (_) => {_deleteLap(context, e.key)},
-                    ))
-                .toList()),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createLap,
-        tooltip: 'Create Lap',
-        child: const Icon(Icons.add),
-      ),
-    );
+            actions: [
+              Builder(
+                builder: (BuildContext context) {
+                  return RaisedButton.icon(
+                    icon: const Icon(Icons.save),
+                    label: const Text('SAVE'),
+                    color: Colors.green,
+                    textColor: Colors.white,
+                    onPressed: () => _save(context),
+                  );
+                },
+              ),
+            ]),
+        body: Center(
+          child: ReorderableListView(
+              onReorder: _onReorder,
+              children: workout.lapItemList
+                  .asMap()
+                  .entries
+                  .map((e) => getLapItemWidget(
+                        e.key,
+                        e.value,
+                        onEdit: () => {_startEditLap(context, e.key)},
+                        onDelete: (_) => {_deleteLap(context, e.key)},
+                      ))
+                  .toList()),
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: FloatingActionButton(
+                heroTag: 'delete',
+                mini: true,
+                onPressed: () => _delete(context),
+                backgroundColor: Colors.grey,
+                tooltip: 'Delete this workout',
+                child: const Icon(
+                  Icons.delete,
+                  size: 16,
+                ),
+              ),
+            ),
+            FloatingActionButton(
+              heroTag: 'add',
+              onPressed: _createLap,
+              tooltip: 'Create a lap',
+              child: const Icon(Icons.add),
+            ),
+          ],
+        ));
   }
 }
 
