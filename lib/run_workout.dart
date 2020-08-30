@@ -63,7 +63,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void dispose() {
     super.dispose();
     timer?.cancel();
-    _ap?.stop();
+    _ap?.dispose();
   }
 
   void _onTimer(Timer timer) {
@@ -71,8 +71,10 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       time -= stepMS / 1000;
       // 3.2 looks good timing
       if ((time - 3.2).abs() < 0.01) {
+        _ap?.dispose();
+        _ap = null;
         _player
-            .play('sounds/countdown.mp3', volume: 1.4)
+            .play('sounds/countdown.mp3', volume: 1.8)
             .then((value) => _ap = value);
       } else if (time < 0) {
         switch (lapState) {
@@ -101,6 +103,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
   void _pause() {
     setState(() {
+      _ap?.dispose();
+      _ap = null;
       timer.cancel();
     });
   }
@@ -160,30 +164,38 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         ),
         body: Center(
             child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Text(currentLap.name, style: const TextStyle(fontSize: 36)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text(_getLapStateLabel(lapState),
-                style: const TextStyle(fontSize: 24)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 24),
-            child: getCountDownWidget(
-                lapState, _getLapTime(lapState, currentLap), time),
-          ),
-          Column(
-            children: nextLap == null
-                ? []
-                : [
-                    Padding(
-                      padding: const EdgeInsets.all(36.0),
-                      child: Text('Next: ${nextLap.name}',
-                          style: const TextStyle(fontSize: 24)),
-                    ),
-                  ],
+          Expanded(
+              child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child:
+                  Text(currentLap.name, style: const TextStyle(fontSize: 36)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(_getLapStateLabel(lapState),
+                  style: const TextStyle(fontSize: 24)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: getCountDownWidget(
+                  lapState, _getLapTime(lapState, currentLap), time),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(nextLap != null ? 'Next: ${nextLap.name}' : '',
+                      style: const TextStyle(fontSize: 24)),
+                ),
+              ],
+            ),
+          ])),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(left: 12, bottom: 20),
+            child: const Text('Sound by OtoLogic(https://otologic.jp)',
+                style: TextStyle(fontSize: 16)),
           )
         ])),
         floatingActionButton: timer.isActive
