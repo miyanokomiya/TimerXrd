@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './models/workout.dart';
@@ -15,12 +16,15 @@ class RunWorkoutPage extends StatefulWidget {
 }
 
 enum LapState {
+  ready,
   work,
   rest,
 }
 
 class _RunWorkoutPageState extends State<RunWorkoutPage> {
   static const int stepMS = 20;
+  static const int readyTime = 5;
+
   Workout workout;
   int lapIndex;
   double time;
@@ -60,18 +64,25 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     setState(() {
       time -= stepMS / 1000;
       if (time < 0) {
-        if (lapState == LapState.work) {
-          lapState = LapState.rest;
-          time = currentLap.rest.toDouble();
-        } else {
-          lapIndex++;
-          if (currentLap == null) {
-            _pause();
-            return;
-          }
+        switch (lapState) {
+          case LapState.ready:
+            lapState = LapState.work;
+            time = currentLap.time.toDouble();
+            break;
+          case LapState.work:
+            lapState = LapState.rest;
+            time = currentLap.rest.toDouble();
+            break;
+          default:
+            lapIndex++;
+            if (currentLap == null) {
+              _pause();
+              return;
+            }
 
-          lapState = LapState.work;
-          time = currentLap.time.toDouble();
+            lapState = LapState.work;
+            time = currentLap.time.toDouble();
+            break;
         }
       }
     });
@@ -95,8 +106,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void _restart() {
     setState(() {
       lapIndex = 0;
-      time = currentLap.time.toDouble();
-      lapState = LapState.work;
+      time = readyTime.toDouble();
+      lapState = LapState.ready;
       _play();
     });
   }
@@ -110,11 +121,19 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             title: Text(workout.name),
           ),
           body: Center(
-              child: Column(children: const [
-            Padding(
+              child: Column(children: [
+            const Padding(
               padding: EdgeInsets.only(top: 16.0),
               child: Text('Good Job!!!', style: TextStyle(fontSize: 36)),
             ),
+            Expanded(
+              child: ListView(
+                  children: workout.lapItemList
+                      .asMap()
+                      .entries
+                      .map((e) => getLapItemWidget(e.key, e.value))
+                      .toList()),
+            )
           ])),
           floatingActionButton: FloatingActionButton(
             onPressed: _restart,
@@ -131,21 +150,25 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         body: Center(
             child: Column(children: [
           Padding(
-            padding: EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.only(top: 16.0),
             child: Text(currentLap.name, style: const TextStyle(fontSize: 36)),
           ),
-          Text(lapState == LapState.work ? 'Work' : 'Rest',
-              style: const TextStyle(fontSize: 24)),
-          getCountDownWidget(
-              lapState,
-              lapState == LapState.work ? currentLap.time : currentLap.rest,
-              time),
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(_getLapStateLabel(lapState),
+                style: const TextStyle(fontSize: 24)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 24),
+            child: getCountDownWidget(
+                lapState, _getLapTime(lapState, currentLap), time),
+          ),
           Column(
             children: nextLap == null
                 ? []
                 : [
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.all(36.0),
                       child: Text('Next: ${nextLap.name}',
                           style: const TextStyle(fontSize: 24)),
                     ),
@@ -171,14 +194,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 Widget getCountDownWidget(LapState state, int range, double current) {
   return CustomPaint(
       painter: CirclePainter(
-          radian: (current / range) * 2 * pi,
-          color: state == LapState.work ? Colors.green : Colors.blue),
+          radian: (current / range) * 2 * pi, color: _getLapStateColor(state)),
       child: Container(
-          height: 200,
+          height: 350,
           child: Center(
               child: Text(
-            current.toStringAsFixed(1),
-            style: const TextStyle(fontSize: 24),
+            current.ceil().toStringAsFixed(0),
+            style: const TextStyle(fontSize: 60),
           ))));
 }
 
@@ -190,19 +212,80 @@ class CirclePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const radius = 150.0;
+    final radius = size.height / 2;
     final center = Offset(size.width / 2, size.height / 2);
 
+    canvas.translate(size.width / 2, size.height / 2);
+    canvas.rotate(-pi / 2);
+    canvas.translate(-size.width / 2, -size.height / 2);
     canvas.drawArc(
-        Rect.fromCenter(center: center, height: radius, width: radius),
+        Rect.fromCenter(center: center, height: radius * 2, width: radius * 2),
+        0,
+        2 * pi,
+        true,
+        Paint()..color = const Color.fromARGB(255, 220, 220, 220));
+    canvas.drawArc(
+        Rect.fromCenter(center: center, height: radius * 2, width: radius * 2),
         0,
         radian,
         true,
         Paint()..color = color);
 
-    canvas.drawCircle(center, radius - 100.0, Paint()..color = Colors.white);
+    canvas.drawCircle(center, radius * 0.7, Paint()..color = Colors.white);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+String _getLapStateLabel(LapState lapState) {
+  switch (lapState) {
+    case LapState.ready:
+      return 'Ready';
+    case LapState.work:
+      return 'Work';
+    default:
+      return 'Rest';
+  }
+}
+
+int _getLapTime(LapState lapState, LapItem lapItem) {
+  switch (lapState) {
+    case LapState.ready:
+      return _RunWorkoutPageState.readyTime;
+    case LapState.work:
+      return lapItem.time;
+    default:
+      return lapItem.rest;
+  }
+}
+
+Color _getLapStateColor(LapState lapState) {
+  switch (lapState) {
+    case LapState.ready:
+      return Colors.yellow;
+    case LapState.work:
+      return Colors.green;
+    default:
+      return Colors.blue;
+  }
+}
+
+Widget getLapItemWidget(int index, LapItem lapItem) {
+  return Container(
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        child: Row(children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Icon(Icons.check, color: Colors.green, size: 36),
+          ),
+          Expanded(
+            child: Text('${index + 1}. ${lapItem.name}',
+                style: const TextStyle(fontSize: 24)),
+          ),
+          Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
+        ]),
+      ));
 }
