@@ -50,6 +50,12 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+  }
+
   void _onTimer(Timer timer) {
     setState(() {
       time -= stepMS / 1000;
