@@ -21,8 +21,67 @@ class MyApp extends StatelessWidget {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           routes: <String, WidgetBuilder>{
-            '/': (_) => MyHomePage(),
+            '/': (_) => EntrancePage(),
+            '/home': (_) => MyHomePage(),
           },
+        ));
+  }
+}
+
+class EntrancePage extends StatefulWidget {
+  @override
+  _EntrancePageState createState() => _EntrancePageState();
+}
+
+class _EntrancePageState extends State<EntrancePage> {
+  bool hasError;
+
+  @override
+  void initState() {
+    super.initState();
+    hasError = false;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      try {
+        await Provider.of<WorkoutStore>(context, listen: false).loadValue();
+        Navigator.of(context).pushReplacementNamed("/home");
+      } catch (_) {
+        setState(() {
+          hasError = true;
+        });
+        rethrow;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appBar = AppBar(title: const Text('Timer Xrd'));
+
+    if (hasError) {
+      return Scaffold(
+        appBar: appBar,
+        body: const Center(
+            child: Text('Failed to load.', style: TextStyle(fontSize: 36))),
+      );
+    }
+
+    return Scaffold(
+        appBar: appBar,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 24),
+          child: Column(children: const [
+            Center(
+              widthFactor: 20.0,
+              child: CircularProgressIndicator(),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text(
+                'Loading...',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          ]),
         ));
   }
 }
@@ -52,44 +111,30 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Provider.of<WorkoutStore>(context, listen: false).loadValue(),
-        builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-          if (snapshot.hasError) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Timer Xrd'),
-              ),
-              body: const Center(
-                  child:
-                      Text('Failed to load.', style: TextStyle(fontSize: 36))),
-            );
-          }
+    final store = Provider.of<WorkoutStore>(context);
+    final workoutList = store.workoutList;
 
-          final store = Provider.of<WorkoutStore>(context);
-          final workoutList = store.workoutList;
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Timer Xrd'),
-            ),
-            body: Center(
-                child: ListView(
-                    children: workoutList
-                        .asMap()
-                        .entries
-                        .map((e) => getWorkoutWidget(ctx, e.value))
-                        .toList())),
-            floatingActionButton: Builder(builder: (BuildContext ctx) {
-              return FloatingActionButton(
-                onPressed: () {
-                  _addWorkspace(store, ctx);
-                },
-                tooltip: 'Create Workout',
-                child: const Icon(Icons.add),
-              );
-            }),
-          );
-        });
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Timer Xrd'),
+      ),
+      body: Center(
+          child: ListView(
+              children: workoutList
+                  .asMap()
+                  .entries
+                  .map((e) => getWorkoutWidget(context, e.value))
+                  .toList())),
+      floatingActionButton: Builder(builder: (BuildContext ctx) {
+        return FloatingActionButton(
+          onPressed: () {
+            _addWorkspace(store, ctx);
+          },
+          tooltip: 'Create Workout',
+          child: const Icon(Icons.add),
+        );
+      }),
+    );
   }
 }
 

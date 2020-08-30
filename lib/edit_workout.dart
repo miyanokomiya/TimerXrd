@@ -90,7 +90,7 @@ class _EditWorkoutState extends State<EditWorkout> {
       onPressed: () async {
         await Provider.of<WorkoutStore>(context, listen: false)
             .removeWorkspace(workout.id);
-        Navigator.popUntil(context, ModalRoute.withName('/'));
+        Navigator.popUntil(context, ModalRoute.withName('/home'));
       },
       child: const Text("Delete"),
     ); // set up the AlertDialog
