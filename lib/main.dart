@@ -154,7 +154,7 @@ Widget getWorkoutWidget(BuildContext context, Workout workout) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(workout.name, style: const TextStyle(fontSize: 24)),
+                    Text(workout.displayName, style: const TextStyle(fontSize: 24)),
                     Text(workout.totalTimeText,
                         style: const TextStyle(fontSize: 16)),
                   ],

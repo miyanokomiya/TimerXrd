@@ -150,7 +150,7 @@ class _EditWorkoutState extends State<EditWorkout> {
               child: Container(
                 decoration: const BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.white))),
-                child: Text(workout.name),
+                child: Text(workout.displayName),
               ),
             ),
             actions: [
@@ -226,7 +226,7 @@ Widget getLapItemWidget(int index, LapItem lapItem,
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${index + 1}. ${lapItem.name}',
+                      Text('${index + 1}. ${lapItem.displayName}',
                           style: const TextStyle(fontSize: 24)),
                       Text('${lapItem.time} s',
                           style: const TextStyle(fontSize: 18)),

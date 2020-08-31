@@ -140,7 +140,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     if (currentLap == null) {
       return Scaffold(
           appBar: AppBar(
-            title: Text(workout.name),
+            title: Text(workout.displayName),
           ),
           body: Center(
               child: Column(children: [
@@ -167,7 +167,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(workout.name),
+          title: Text(workout.displayName),
         ),
         body: Center(
             child: Column(children: [
@@ -176,7 +176,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child:
-                  Text(currentLap.name, style: const TextStyle(fontSize: 36)),
+                  Text(currentLap.displayName, style: const TextStyle(fontSize: 36)),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -192,7 +192,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Text(nextLap != null ? 'Next: ${nextLap.name}' : '',
+                  child: Text(nextLap != null ? 'Next: ${nextLap.displayName}' : '',
                       style: const TextStyle(fontSize: 24)),
                 ),
               ],
@@ -312,7 +312,7 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
             child: Icon(Icons.check, color: Colors.green, size: 36),
           ),
           Expanded(
-            child: Text('${index + 1}. ${lapItem.name}',
+            child: Text('${index + 1}. ${lapItem.displayName}',
                 style: const TextStyle(fontSize: 24)),
           ),
           Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),

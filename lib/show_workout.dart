@@ -25,7 +25,7 @@ class _ShowWorkoutPageState extends State<ShowWorkoutPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(workout.name), actions: [
+      appBar: AppBar(title: Text(workout.displayName), actions: [
         IconButton(
             icon: const Icon(Icons.edit),
             color: Colors.white,
@@ -67,7 +67,7 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
       child: Column(children: [
         Row(children: [
           Expanded(
-            child: Text('${index + 1}. ${lapItem.name}',
+            child: Text('${index + 1}. ${lapItem.displayName}',
                 style: const TextStyle(fontSize: 24)),
           ),
           Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),

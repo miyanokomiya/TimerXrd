@@ -9,12 +9,14 @@ class Workout {
   String name;
   List<LapItem> lapItemList;
 
-  Workout({this.name = 'Workout', this.lapItemList = const [], this.id});
+  Workout({this.name = '', this.lapItemList = const [], this.id});
 
   Workout.fromMap(Map map) {
     id = map['id'] as int;
     name = map['name'] as String;
   }
+
+  String get displayName => name == '' ? 'no name' : name;
 
   int get totalTime => lapItemList
       .map((e) => e.time + e.rest)
@@ -58,7 +60,7 @@ class LapItem {
   int rest;
 
   LapItem({
-    this.name = 'New Lap',
+    this.name = '',
     this.time = 45,
     this.rest = 15,
   }) {
@@ -71,6 +73,8 @@ class LapItem {
     rest = map['rest'] as int;
     key = uuid.v4();
   }
+
+  String get displayName => name == '' ? 'no name' : name;
 
   LapItem clone() {
     return LapItem(name: name, time: time, rest: rest);
@@ -109,7 +113,9 @@ Future<Database> getDataBase() async {
 
   const version = 1;
 
-  final database = _database ??
+  if (_database != null) return _database;
+  
+  final database = 
       await openDatabase(
         join(path),
         version: version,

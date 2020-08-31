@@ -37,7 +37,6 @@ class WorkoutStore with ChangeNotifier {
 
   Future<Workout> addWorkspace() async {
     final workout = Workout(
-      name: 'New Workout',
       lapItemList: [
         LapItem(),
         LapItem(),
