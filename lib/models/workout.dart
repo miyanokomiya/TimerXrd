@@ -135,5 +135,6 @@ Future<Database> getDataBase() async {
         },
         onUpgrade: onUpgrade,
       );
+  database.execute('PRAGMA foreign_keys=ON;');
   return database;
 }
