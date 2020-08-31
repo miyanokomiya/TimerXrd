@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:wakelock/wakelock.dart';
 import './models/workout.dart';
 import './store/workout_store.dart';
 
@@ -47,6 +48,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         workout = context
@@ -62,6 +64,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   @override
   void dispose() {
     super.dispose();
+    Wakelock.disable();
     timer?.cancel();
     _ap?.dispose();
     _ap = null;
