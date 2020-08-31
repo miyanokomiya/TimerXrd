@@ -145,17 +145,21 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
           body: Center(
               child: Column(children: [
             const Padding(
-              padding: EdgeInsets.only(top: 16.0),
+              padding: EdgeInsets.only(top: 16, bottom: 16),
               child: Text('💪 Good Job 👍', style: TextStyle(fontSize: 36)),
             ),
             Expanded(
+                child: Container(
+              decoration:
+                  const BoxDecoration(border: Border(top: BorderSide())),
               child: ListView(
                   children: workout.lapItemList
                       .asMap()
                       .entries
                       .map((e) => getLapItemWidget(e.key, e.value))
-                      .toList()),
-            )
+                      .toList()
+                        ..add(Container(height: 80))),
+            ))
           ])),
           floatingActionButton: FloatingActionButton(
             onPressed: _restart,
@@ -175,8 +179,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               child: Column(children: [
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
-              child:
-                  Text(currentLap.displayName, style: const TextStyle(fontSize: 36)),
+              child: Text(currentLap.displayName,
+                  style: const TextStyle(fontSize: 36)),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -192,7 +196,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Text(nextLap != null ? 'Next: ${nextLap.displayName}' : '',
+                  child: Text(
+                      nextLap != null ? 'Next: ${nextLap.displayName}' : '',
                       style: const TextStyle(fontSize: 24)),
                 ),
               ],
