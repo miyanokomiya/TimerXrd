@@ -49,7 +49,14 @@ class _EditWorkoutState extends State<EditWorkout> {
     });
   }
 
-  void _deleteLap(BuildContext context, int lapIndex) async {
+  void _cloneLap(int lapIndex) {
+    setState(() {
+      workout.lapItemList
+          .insert(lapIndex, workout.lapItemList[lapIndex].clone());
+    });
+  }
+
+  void _deleteLap(int lapIndex) {
     setState(() {
       workout.lapItemList.removeAt(lapIndex);
     });
@@ -176,7 +183,8 @@ class _EditWorkoutState extends State<EditWorkout> {
                         e.key,
                         e.value,
                         onEdit: () => {_startEditLap(context, e.key)},
-                        onDelete: (_) => {_deleteLap(context, e.key)},
+                        onClone: () => {_cloneLap(e.key)},
+                        onDelete: (_) => {_deleteLap(e.key)},
                       ))
                   .toList()),
         ),
@@ -210,6 +218,7 @@ class _EditWorkoutState extends State<EditWorkout> {
 
 Widget getLapItemWidget(int index, LapItem lapItem,
     {@required void Function() onEdit,
+    @required void Function() onClone,
     @required void Function(DismissDirection direction) onDelete}) {
   return Dismissible(
       background: Container(color: Colors.red),
@@ -247,10 +256,19 @@ Widget getLapItemWidget(int index, LapItem lapItem,
                 )
               ]),
             )),
-            IconButton(
-              color: Colors.lightBlue,
-              onPressed: onEdit,
-              icon: const Icon(Icons.edit),
+            Column(
+              children: [
+                IconButton(
+                  color: Colors.lightBlue,
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit),
+                ),
+                IconButton(
+                  color: Colors.lightBlue,
+                  onPressed: onClone,
+                  icon: const Icon(Icons.content_copy),
+                ),
+              ],
             )
           ])));
 }
