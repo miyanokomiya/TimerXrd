@@ -64,6 +64,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     super.dispose();
     timer?.cancel();
     _ap?.dispose();
+    _ap = null;
   }
 
   void _onTimer(Timer timer) {
@@ -74,7 +75,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         _ap?.dispose();
         _ap = null;
         _player
-            .play('sounds/countdown.mp3', volume: 1.8)
+            .play('sounds/countdown.mp3', volume: 1)
             .then((value) => _ap = value);
       } else if (time < 0) {
         switch (lapState) {
@@ -89,10 +90,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
           default:
             lapIndex++;
             if (currentLap == null) {
-              _pause();
+              timer.cancel();
+              Future.delayed(const Duration(seconds: 3)).then((_) {
+                _ap?.dispose();
+                _ap = null;
+              });
               return;
             }
-
             lapState = LapState.work;
             time = currentLap.time.toDouble();
             break;
