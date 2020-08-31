@@ -2,6 +2,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
+final Uuid uuid = Uuid();
+
 class Workout {
   int id;
   String name;
@@ -47,8 +49,6 @@ class LapGroup {
   LapGroup({this.repetition = 1, this.lapItemList = const []});
 }
 
-final Uuid uuid = Uuid();
-
 class LapItem {
   // tmp unique key
   String key;
@@ -57,7 +57,11 @@ class LapItem {
   int time;
   int rest;
 
-  LapItem({this.name = 'New Lap', this.time = 45, this.rest = 15}) {
+  LapItem({
+    this.name = 'New Lap',
+    this.time = 45,
+    this.rest = 15,
+  }) {
     key = uuid.v4();
   }
 
@@ -83,15 +87,32 @@ class LapItem {
 
 Database _database;
 
+const Map<String, List<String>> scripts = {
+  // '2': [
+  //   'ALTER TABLE lap_item ADD COLUMN lap_type INTEGER DEFAULT 0;',
+  // ],
+};
+
+Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+  for (var i = oldVersion + 1; i <= newVersion; i++) {
+    final queries = scripts[i.toString()];
+    for (final query in queries) {
+      await db.execute(query);
+    }
+  }
+}
+
 Future<Database> getDataBase() async {
   final databasesPath = await getDatabasesPath();
   final path = join(databasesPath, 'app.db');
   // await deleteDatabase(path);
 
+  const version = 1;
+
   final database = _database ??
       await openDatabase(
         join(path),
-        version: 1,
+        version: version,
         onCreate: (db, version) async {
           await db.execute("""
         CREATE TABLE workout(
@@ -106,10 +127,13 @@ Future<Database> getDataBase() async {
           name TEXT,
           time INTEGER,
           rest INTEGER,
-          PRIMARY KEY(workout_id, item_index)
+          PRIMARY KEY(workout_id, item_index),
+          FOREIGN KEY (workout_id) REFERENCES workout(id) ON UPDATE CASCADE ON DELETE CASCADE
         );
         """);
+          onUpgrade(db, 1, version);
         },
+        onUpgrade: onUpgrade,
       );
   return database;
 }

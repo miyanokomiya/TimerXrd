@@ -28,7 +28,6 @@ class WorkoutStore with ChangeNotifier {
   Future<void> removeWorkspace(int id) async {
     final db = await getDataBase();
     await db.transaction((txn) async {
-      await txn.delete('lap_item', where: 'workout_id = ?', whereArgs: [id]);
       await txn.delete('Workout', where: 'id = ?', whereArgs: [id]);
     });
 
