@@ -1,5 +1,3 @@
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 final Uuid uuid = Uuid();
@@ -87,60 +85,4 @@ class LapItem {
       'rest': rest,
     };
   }
-}
-
-Database _database;
-
-const Map<String, List<String>> scripts = {
-  // '2': [
-  //   'ALTER TABLE lap_item ADD COLUMN lap_type INTEGER DEFAULT 0;',
-  // ],
-};
-
-Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-  for (var i = oldVersion + 1; i <= newVersion; i++) {
-    final queries = scripts[i.toString()];
-    for (final query in queries) {
-      await db.execute(query);
-    }
-  }
-}
-
-Future<Database> getDataBase() async {
-  final databasesPath = await getDatabasesPath();
-  final path = join(databasesPath, 'app.db');
-  // await deleteDatabase(path);
-
-  const version = 1;
-
-  if (_database != null) return _database;
-  
-  final database = 
-      await openDatabase(
-        join(path),
-        version: version,
-        onCreate: (db, version) async {
-          await db.execute("""
-        CREATE TABLE workout(
-          id INTEGER PRIMARY KEY,
-          name TEXT
-        );
-        """);
-          await db.execute("""
-        CREATE TABLE lap_item(
-          workout_id INTEGER,
-          item_index INTEGER,
-          name TEXT,
-          time INTEGER,
-          rest INTEGER,
-          PRIMARY KEY(workout_id, item_index),
-          FOREIGN KEY (workout_id) REFERENCES workout(id) ON UPDATE CASCADE ON DELETE CASCADE
-        );
-        """);
-          onUpgrade(db, 1, version);
-        },
-        onUpgrade: onUpgrade,
-      );
-  database.execute('PRAGMA foreign_keys=ON;');
-  return database;
 }
