@@ -4,6 +4,13 @@ A new Flutter project.
 
 https://miyanokomiya.github.io/TimerXrd/
 
+## Env
+Create the file `.env`.
+```
+ALGOLIA_APPLICATION_ID=id
+ALGOLIA_API_KEY=key
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

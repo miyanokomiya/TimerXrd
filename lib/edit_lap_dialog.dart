@@ -1,5 +1,12 @@
+import 'package:algolia/algolia.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import './models/workout.dart';
+
+final algolia = Algolia.init(
+    applicationId: DotEnv().env['ALGOLIA_APPLICATION_ID'],
+    apiKey: DotEnv().env['ALGOLIA_API_KEY']);
 
 class EditLapDialog extends StatefulWidget {
   final LapItem lapItem;
@@ -15,12 +22,31 @@ class _EditLapDialogState extends State<EditLapDialog> {
   int draftTime;
   int draftRest;
 
+  // Algolia algolia = Application.algolia;
+
   @override
   void initState() {
     super.initState();
     nameTextController.text = widget.lapItem.name;
     draftTime = widget.lapItem.time;
     draftRest = widget.lapItem.rest;
+  }
+
+  Future<List<String>> _suggestionsCallback(String pattern) async {
+    if (nameTextController.text == '') {
+      return [];
+    }
+
+    AlgoliaQuery query = algolia.instance.index('exercises');
+    query = query.search(nameTextController.text);
+
+    try {
+      final _results = (await query.getObjects()).hits;
+      return _results.map((e) => e.data['name_jp']).cast<String>().toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
   }
 
   @override
@@ -52,12 +78,24 @@ class _EditLapDialogState extends State<EditLapDialog> {
       title: const Text("Edit Lap"),
       content: Form(
           child: Column(children: [
-        TextField(
-          controller: nameTextController,
-          decoration: const InputDecoration(
-            labelText: 'Name',
+        TypeAheadField(
+          textFieldConfiguration: TextFieldConfiguration(
+            controller: nameTextController,
+            decoration: const InputDecoration(
+              labelText: 'Name',
+            ),
           ),
-          keyboardType: TextInputType.text,
+          hideOnEmpty: true,
+          hideOnLoading: true,
+          suggestionsCallback: _suggestionsCallback,
+          itemBuilder: (context, String suggestion) {
+            return ListTile(
+              title: Text(suggestion),
+            );
+          },
+          onSuggestionSelected: (String value) {
+            nameTextController.text = value;
+          },
         ),
         const Divider(),
         getTimeSelectField('Time', draftTime, (int next) {

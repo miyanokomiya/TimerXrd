@@ -68,7 +68,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         _ap?.dispose();
         _ap = null;
         _player
-            .play('sounds/countdown.mp3', volume: 1)
+            .play('sounds/countdown.mp3')
             .then((value) => _ap = value);
       } else if (time < 0) {
         switch (lapState) {
