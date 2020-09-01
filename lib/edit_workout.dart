@@ -36,11 +36,12 @@ class _EditWorkoutState extends State<EditWorkout> {
   void _createLap() {
     setState(() {
       workout.lapItemList.add(LapItem());
-      Future.delayed(const Duration(milliseconds: 50)).then((_) => _controller.animateTo(
-            _controller.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn,
-          ));
+      Future.delayed(const Duration(milliseconds: 50))
+          .then((_) => _controller.animateTo(
+                _controller.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.fastOutSlowIn,
+              ));
     });
   }
 
@@ -161,10 +162,14 @@ class _EditWorkoutState extends State<EditWorkout> {
                 _startEditName(context);
               },
               child: Container(
-                decoration: const BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.white))),
-                child: Text(workout.displayName),
-              ),
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.white))),
+                  child: Flexible(
+                    child: Text(
+                      workout.displayName,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )),
             ),
             actions: [
               Builder(
@@ -242,8 +247,13 @@ Widget getLapItemWidget(int index, LapItem lapItem,
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${index + 1}. ${lapItem.displayName}',
-                          style: const TextStyle(fontSize: 24)),
+                      Flexible(
+                        child: Text(
+                          '${index + 1}. ${lapItem.displayName}',
+                          style: const TextStyle(fontSize: 24),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       Text('${lapItem.time} s',
                           style: const TextStyle(fontSize: 18)),
                     ]),

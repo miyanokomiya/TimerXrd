@@ -60,8 +60,11 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
       child: Column(children: [
         Row(children: [
           Expanded(
-            child: Text('${index + 1}. ${lapItem.displayName}',
-                style: const TextStyle(fontSize: 24)),
+            child: Text(
+              '${index + 1}. ${lapItem.displayName}',
+              style: const TextStyle(fontSize: 24),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
         ]),

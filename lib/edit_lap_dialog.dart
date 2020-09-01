@@ -76,7 +76,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
 
     return AlertDialog(
       title: const Text("Edit Lap"),
-      content: Form(
+      content: SingleChildScrollView(
           child: Column(children: [
         TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
@@ -90,6 +90,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
           suggestionsCallback: _suggestionsCallback,
           itemBuilder: (context, String suggestion) {
             return ListTile(
+              dense: true,
               title: Text(suggestion),
             );
           },
