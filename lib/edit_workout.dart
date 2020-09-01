@@ -36,7 +36,7 @@ class _EditWorkoutState extends State<EditWorkout> {
   void _createLap() {
     setState(() {
       workout.lapItemList.add(LapItem());
-      Future.delayed(Duration.zero).then((_) => _controller.animateTo(
+      Future.delayed(const Duration(milliseconds: 50)).then((_) => _controller.animateTo(
             _controller.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
