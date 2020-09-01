@@ -2,19 +2,17 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:wakelock/wakelock.dart';
 import './models/workout.dart';
-import './store/workout_store.dart';
 
 AudioCache _player = AudioCache();
 
 class RunWorkoutPage extends StatefulWidget {
-  final int id;
+  final Workout workout;
 
-  const RunWorkoutPage({Key key, @required this.id}) : super(key: key);
+  const RunWorkoutPage({Key key, @required this.workout}) : super(key: key);
 
   @override
   _RunWorkoutPageState createState() => _RunWorkoutPageState();
@@ -30,12 +28,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   static const int stepMS = 20;
   static const int readyTime = 5;
 
-  Workout workout;
   int lapIndex;
   double time;
   Timer timer;
   LapState lapState;
   AudioPlayer _ap;
+
+  Workout get workout => widget.workout;
 
   LapItem get currentLap => workout.lapItemList.length > lapIndex
       ? workout.lapItemList[lapIndex]
@@ -49,16 +48,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void initState() {
     super.initState();
     Wakelock.enable();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        workout = context
-            .read<WorkoutStore>()
-            .workoutList
-            .firstWhere((element) => element.id == widget.id)
-            .clone();
-        _restart();
-      });
-    });
+    _restart();
   }
 
   @override
@@ -136,7 +126,6 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (workout == null) return Scaffold(body: Container());
     if (currentLap == null) {
       return Scaffold(
           appBar: AppBar(

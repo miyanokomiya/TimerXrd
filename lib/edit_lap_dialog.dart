@@ -84,12 +84,13 @@ class _EditLapDialogState extends State<EditLapDialog> {
   }
 }
 
-final secondOptions = List.generate(15, (i) => (i + 1) * 5);
-
 Widget getTimeSelectField(
-    String label, int value, void Function(int val) onChanged) {
+    String label, int value, void Function(int val) onChanged,
+    {int step = 5, int count = 15, String unit = 's'}) {
+  final secondOptions = List.generate(count, (i) => (i + 1) * step);
+
   return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-    Text(label),
+    Text(label, style: const TextStyle(fontSize: 20)),
     DropdownButton<int>(
       value: value,
       icon: const Icon(Icons.arrow_drop_down),
@@ -104,7 +105,7 @@ Widget getTimeSelectField(
       items: secondOptions.map<DropdownMenuItem<int>>((int value) {
         return DropdownMenuItem<int>(
           value: value,
-          child: Text('${value}s'),
+          child: Text('$value$unit'),
         );
       }).toList(),
     )
