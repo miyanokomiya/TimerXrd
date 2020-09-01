@@ -16,6 +16,7 @@ class EditWorkout extends StatefulWidget {
 
 class _EditWorkoutState extends State<EditWorkout> {
   Workout workout;
+  final _controller = ScrollController();
 
   @override
   void initState() {
@@ -35,6 +36,11 @@ class _EditWorkoutState extends State<EditWorkout> {
   void _createLap() {
     setState(() {
       workout.lapItemList.add(LapItem());
+      Future.delayed(Duration.zero).then((_) => _controller.animateTo(
+            _controller.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          ));
     });
   }
 
@@ -175,6 +181,7 @@ class _EditWorkoutState extends State<EditWorkout> {
             ]),
         body: Center(
           child: ReorderableListView(
+              scrollController: _controller,
               onReorder: _onReorder,
               children: workout.lapItemList
                   .asMap()
