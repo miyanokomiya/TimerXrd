@@ -4,6 +4,7 @@ import './edit_lap_dialog.dart';
 import './edit_name_dialog.dart';
 import './models/workout.dart';
 import './store/workout_store.dart';
+import './widgets/lap_item.dart';
 
 class EditWorkout extends StatefulWidget {
   final int id;
@@ -155,6 +156,8 @@ class _EditWorkoutState extends State<EditWorkout> {
   Widget build(BuildContext context) {
     if (workout == null) return Scaffold(body: Container());
 
+    final adjustedIndexList = workout.adjustedIndexList;
+
     return Scaffold(
         appBar: AppBar(
             title: GestureDetector(
@@ -190,7 +193,7 @@ class _EditWorkoutState extends State<EditWorkout> {
                   .asMap()
                   .entries
                   .map((e) => getLapItemWidget(
-                        e.key,
+                        adjustedIndexList[e.key],
                         e.value,
                         onEdit: () => {_startEditLap(context, e.key)},
                         onClone: () => {_cloneLap(e.key)},
@@ -237,41 +240,11 @@ Widget getLapItemWidget(int index, LapItem lapItem,
       child: Container(
           decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
           child:
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Flexible(
-                child:
-                Container(
+                child: Container(
               padding: const EdgeInsets.all(12),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          '${index + 1}. ${lapItem.displayName}',
-                          style: const TextStyle(fontSize: 20),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text('${lapItem.time} s',
-                          style: const TextStyle(fontSize: 16)),
-                    ]),
-                const Divider(
-                  color: Colors.black,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      child: const Text('Rest', style: TextStyle(fontSize: 18)),
-                    ),
-                    Text('${lapItem.rest} s',
-                        style: const TextStyle(fontSize: 18)),
-                  ],
-                )
-              ]),
+              child: getLapListItem(index, lapItem),
             )),
             Column(
               mainAxisSize: MainAxisSize.min,

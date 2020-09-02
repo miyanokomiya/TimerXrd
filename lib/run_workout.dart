@@ -36,12 +36,20 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
   Workout get workout => widget.workout;
 
-  LapItem get currentLap => workout.lapItemList.length > lapIndex
-      ? workout.lapItemList[lapIndex]
+  List<LapItem> get expandedLapItemList {
+    final List<LapItem> list = [];
+    for (final lap in workout.lapItemList) {
+      list.addAll(lap.expandLapItemList());
+    }
+    return list;
+  }
+
+  LapItem get currentLap => expandedLapItemList.length > lapIndex
+      ? expandedLapItemList[lapIndex]
       : null;
 
-  LapItem get nextLap => workout.lapItemList.length > lapIndex + 1
-      ? workout.lapItemList[lapIndex + 1]
+  LapItem get nextLap => expandedLapItemList.length > lapIndex + 1
+      ? expandedLapItemList[lapIndex + 1]
       : null;
 
   @override
@@ -140,7 +148,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               decoration:
                   const BoxDecoration(border: Border(top: BorderSide())),
               child: ListView(
-                  children: workout.lapItemList
+                  children: expandedLapItemList
                       .asMap()
                       .entries
                       .map((e) => getLapItemWidget(e.key, e.value))
@@ -305,16 +313,16 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
   return Container(
       decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         child: Row(children: [
           const Padding(
             padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.check, color: Colors.green, size: 36),
+            child: Icon(Icons.check, color: Colors.green, size: 30),
           ),
           Expanded(
             child: Text(
               '${index + 1}. ${lapItem.displayName}',
-              style: const TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 20),
               overflow: TextOverflow.ellipsis,
             ),
           ),

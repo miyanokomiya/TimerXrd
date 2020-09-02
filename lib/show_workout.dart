@@ -4,6 +4,7 @@ import './edit_workout.dart';
 import './models/workout.dart';
 import './run_workout.dart';
 import './store/workout_store.dart';
+import './widgets/lap_item.dart';
 
 class ShowWorkoutPage extends StatelessWidget {
   final int id;
@@ -18,6 +19,8 @@ class ShowWorkoutPage extends StatelessWidget {
     if (workout == null) {
       return Scaffold(appBar: AppBar(title: const Text('No data')));
     }
+
+    final adjustedIndexList = workout.adjustedIndexList;
 
     return Scaffold(
       appBar: AppBar(title: Text(workout.displayName), actions: [
@@ -34,7 +37,7 @@ class ShowWorkoutPage extends StatelessWidget {
             children: workout.lapItemList
                 .asMap()
                 .entries
-                .map((e) => getLapItemWidget(e.key, e.value))
+                .map((e) => getLapItemWidget(adjustedIndexList[e.key], e.value))
                 .toList()),
       ),
       floatingActionButton: FloatingActionButton(
@@ -57,31 +60,7 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
     decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
     child: Container(
       padding: const EdgeInsets.all(12),
-      child: Column(children: [
-        Row(children: [
-          Expanded(
-            child: Text(
-              '${index + 1}. ${lapItem.displayName}',
-              style: const TextStyle(fontSize: 24),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
-        ]),
-        const Divider(
-          color: Colors.black,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 12),
-              child: const Text('Rest', style: TextStyle(fontSize: 18)),
-            ),
-            Text('${lapItem.rest} s', style: const TextStyle(fontSize: 18)),
-          ],
-        )
-      ]),
+      child: getLapListItem(index, lapItem),
     ),
   );
 }

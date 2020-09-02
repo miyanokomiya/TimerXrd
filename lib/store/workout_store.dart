@@ -100,7 +100,7 @@ Future<Database> getDataBase() async {
   final path = join(databasesPath, 'app.db');
   // await deleteDatabase(path);
 
-  const version = 1;
+  const version = 2;
 
   if (_database != null) return _database;
 
@@ -134,9 +134,10 @@ Future<Database> getDataBase() async {
 }
 
 const Map<String, List<String>> scripts = {
-  // '2': [
-  //   """
-  //   """,
-  // ],
+  '2': [
+    """
+    ALTER TABLE lap_item ADD COLUMN is_left_and_right INTEGER DEFAULT 0;
+    """,
+  ],
 };
 

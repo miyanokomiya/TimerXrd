@@ -21,6 +21,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
   final nameTextController = TextEditingController();
   int draftTime;
   int draftRest;
+  bool draftIsLeftAndRight;
 
   // Algolia algolia = Application.algolia;
 
@@ -30,6 +31,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
     nameTextController.text = widget.lapItem.name;
     draftTime = widget.lapItem.time;
     draftRest = widget.lapItem.rest;
+    draftIsLeftAndRight = widget.lapItem.isLeftAndRight;
   }
 
   Future<List<String>> _suggestionsCallback(String pattern) async {
@@ -68,6 +70,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
                 name: nameTextController.text,
                 time: draftTime,
                 rest: draftRest,
+                isLeftAndRight: draftIsLeftAndRight,
               ));
         },
         child: Text(localizations.okButtonLabel),
@@ -111,6 +114,20 @@ class _EditLapDialogState extends State<EditLapDialog> {
           });
         }),
         const Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Text('Left and Right'),
+            Checkbox(
+              value: draftIsLeftAndRight,
+              onChanged: (bool val) {
+                setState(() {
+                  draftIsLeftAndRight = val;
+                });
+              },
+            )
+          ],
+        )
       ])),
       actions: actions,
     );
