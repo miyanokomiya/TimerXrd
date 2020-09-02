@@ -162,14 +162,12 @@ class _EditWorkoutState extends State<EditWorkout> {
                 _startEditName(context);
               },
               child: Container(
-                  decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.white))),
-                  child: Flexible(
-                    child: Text(
-                      workout.displayName,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )),
+                decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.white))),
+                child: Text(
+                  workout.displayName,
+                ),
+              ),
             ),
             actions: [
               Builder(
@@ -239,9 +237,11 @@ Widget getLapItemWidget(int index, LapItem lapItem,
       child: Container(
           decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Expanded(
-                child: Container(
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Flexible(
+                child:
+                Container(
               padding: const EdgeInsets.all(12),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Row(
@@ -250,12 +250,12 @@ Widget getLapItemWidget(int index, LapItem lapItem,
                       Flexible(
                         child: Text(
                           '${index + 1}. ${lapItem.displayName}',
-                          style: const TextStyle(fontSize: 24),
+                          style: const TextStyle(fontSize: 20),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text('${lapItem.time} s',
-                          style: const TextStyle(fontSize: 18)),
+                          style: const TextStyle(fontSize: 16)),
                     ]),
                 const Divider(
                   color: Colors.black,
@@ -274,6 +274,7 @@ Widget getLapItemWidget(int index, LapItem lapItem,
               ]),
             )),
             Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   color: Colors.lightBlue,

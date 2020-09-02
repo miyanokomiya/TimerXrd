@@ -70,8 +70,13 @@ Widget getWorkoutWidget(BuildContext context, Workout workout) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(workout.displayName,
-                        style: const TextStyle(fontSize: 24)),
+                    Flexible(
+                      child: Text(
+                        workout.displayName,
+                        style: const TextStyle(fontSize: 24),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     Text(workout.totalTimeText,
                         style: const TextStyle(fontSize: 16)),
                   ],
