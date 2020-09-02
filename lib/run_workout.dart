@@ -67,9 +67,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       if ((time - 3.2).abs() < 0.01) {
         _ap?.dispose();
         _ap = null;
-        _player
-            .play('sounds/countdown.mp3')
-            .then((value) => _ap = value);
+        _player.play('sounds/countdown.mp3').then((value) => _ap = value);
       } else if (time < 0) {
         switch (lapState) {
           case LapState.ready:
@@ -165,36 +163,44 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         body: Center(
             child: Column(children: [
           Expanded(
-              child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Text(currentLap.displayName,
-                  style: const TextStyle(fontSize: 36)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text(_getLapStateLabel(lapState),
-                  style: const TextStyle(fontSize: 24)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24),
-              child: getCountDownWidget(
-                  lapState, _getLapTime(lapState, currentLap), time),
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(
-                      nextLap != null ? 'Next: ${nextLap.displayName}' : '',
-                      style: const TextStyle(fontSize: 24)),
+            child: SingleChildScrollView(
+                child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  currentLap.displayName,
+                  style: const TextStyle(fontSize: 30),
+                  textAlign: TextAlign.center,
                 ),
-              ],
-            ),
-          ])),
+              ),
+              Text(_getLapStateLabel(lapState),
+                  style: const TextStyle(fontSize: 24)),
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
+                child: getCountDownWidget(
+                    lapState, _getLapTime(lapState, currentLap), time),
+              ),
+              Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 24),
+                    child: Text('Next', style: TextStyle(fontSize: 24)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      nextLap?.displayName ?? 'Finish!!',
+                      style: const TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ])),
+          ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 12, bottom: 20),
+            padding: const EdgeInsets.only(top: 4, left: 12, bottom: 20),
             child: const Text('Sound by OtoLogic(https://otologic.jp)',
                 style: TextStyle(fontSize: 16)),
           )
@@ -220,7 +226,7 @@ Widget getCountDownWidget(LapState state, int range, double current) {
       painter: CirclePainter(
           radian: (current / range) * 2 * pi, color: _getLapStateColor(state)),
       child: Container(
-          height: 350,
+          height: 320,
           child: Center(
               child: Text(
             current.ceil().toStringAsFixed(0),
@@ -306,8 +312,11 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
             child: Icon(Icons.check, color: Colors.green, size: 36),
           ),
           Expanded(
-            child: Text('${index + 1}. ${lapItem.displayName}',
-                style: const TextStyle(fontSize: 24)),
+            child: Text(
+              '${index + 1}. ${lapItem.displayName}',
+              style: const TextStyle(fontSize: 24),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
         ]),
