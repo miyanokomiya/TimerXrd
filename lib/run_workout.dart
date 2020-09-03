@@ -225,7 +225,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   }
 
   Widget getNextActLabel() {
-    if (lapState == LapState.work) {
+    if (lapState == LapState.ready) {
+      return Text(
+        '${currentLap.displayName} (${currentLap.time}s)',
+        style: const TextStyle(fontSize: 24),
+        textAlign: TextAlign.center,
+      );
+    } else if (lapState == LapState.work) {
       return Text(
         'Rest (${currentLap.rest}s)',
         style: const TextStyle(fontSize: 24),
