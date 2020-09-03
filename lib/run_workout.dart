@@ -182,22 +182,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 child: getCountDownWidget(
                     lapState, _getLapTime(lapState, currentLap), time),
               ),
-              Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 24),
-                    child: Text('Next', style: TextStyle(fontSize: 24)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Text(
-                      nextLap?.displayName ?? 'Finish!!',
-                      style: const TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
+              getNextActWidget(),
             ])),
           ),
           Container(
@@ -220,6 +205,55 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 backgroundColor: Colors.green,
                 child: const Icon(Icons.play_arrow, size: 36),
               ));
+  }
+
+  Column getNextActWidget() {
+    return Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 18),
+                  child:
+                      Icon(Icons.arrow_downward, color: Colors.blue,
+                      size: 36,)
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: getNextActLabel(),
+                ),
+              ],
+            );
+  }
+
+  Widget getNextActLabel() {
+    if (lapState == LapState.work) {
+      return Text(
+        'Rest (${currentLap.rest}s)',
+        style: const TextStyle(fontSize: 24),
+        textAlign: TextAlign.center,
+      );
+    } else if (nextLap != null) {
+      return Text(
+        '${nextLap.displayName} (${nextLap.time}s)',
+        style: const TextStyle(fontSize: 24),
+        textAlign: TextAlign.center,
+      );
+    }
+    else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Text(
+            'Finish',
+            style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.center,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: Icon(Icons.done_all, color: Colors.green, size: 30),
+          ),
+        ],
+      );
+    }
   }
 }
 
