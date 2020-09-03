@@ -168,15 +168,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             child: SingleChildScrollView(
                 child: Column(children: [
               Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.only(top: 16),
                 child: Text(
-                  currentLap.displayName,
+                  getCurrentActText(),
                   style: const TextStyle(fontSize: 30),
                   textAlign: TextAlign.center,
                 ),
               ),
-              Text(_getLapStateLabel(lapState),
-                  style: const TextStyle(fontSize: 24)),
               Padding(
                 padding: const EdgeInsets.only(top: 24),
                 child: getCountDownWidget(
@@ -207,21 +205,32 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               ));
   }
 
-  Column getNextActWidget() {
+  String getCurrentActText() {
+    if (lapState == LapState.ready) {
+      return 'Ready';
+    } else if (lapState == LapState.work) {
+      return currentLap.name;
+    } else {
+      return 'Rest';
+    }
+  }
+
+  Widget getNextActWidget() {
     return Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 18),
-                  child:
-                      Icon(Icons.arrow_downward, color: Colors.blue,
-                      size: 36,)
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: getNextActLabel(),
-                ),
-              ],
-            );
+      children: [
+        const Padding(
+            padding: EdgeInsets.only(top: 18),
+            child: Icon(
+              Icons.arrow_downward,
+              color: Colors.blue,
+              size: 36,
+            )),
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: getNextActLabel(),
+        ),
+      ],
+    );
   }
 
   Widget getNextActLabel() {
@@ -243,8 +252,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         style: const TextStyle(fontSize: 24),
         textAlign: TextAlign.center,
       );
-    }
-    else {
+    } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
@@ -308,17 +316,6 @@ class CirclePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
-String _getLapStateLabel(LapState lapState) {
-  switch (lapState) {
-    case LapState.ready:
-      return 'Ready';
-    case LapState.work:
-      return 'Work';
-    default:
-      return 'Rest';
-  }
 }
 
 int _getLapTime(LapState lapState, LapItem lapItem) {
