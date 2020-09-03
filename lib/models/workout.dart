@@ -16,7 +16,15 @@ class Workout {
 
   String get displayName => name == '' ? 'no name' : name;
 
-  int get totalTime => lapItemList
+  List<LapItem> get expandedLapItemList {
+    final List<LapItem> list = [];
+    for (final lap in lapItemList) {
+      list.addAll(lap.expandLapItemList());
+    }
+    return list;
+  }
+
+  int get totalTime => expandedLapItemList
       .map((e) => e.time + e.rest)
       .reduce((value, element) => value + element);
 

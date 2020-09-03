@@ -36,13 +36,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
   Workout get workout => widget.workout;
 
-  List<LapItem> get expandedLapItemList {
-    final List<LapItem> list = [];
-    for (final lap in workout.lapItemList) {
-      list.addAll(lap.expandLapItemList());
-    }
-    return list;
-  }
+  List<LapItem> get expandedLapItemList => workout.expandedLapItemList;
 
   LapItem get currentLap => expandedLapItemList.length > lapIndex
       ? expandedLapItemList[lapIndex]
