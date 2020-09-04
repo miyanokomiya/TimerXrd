@@ -49,13 +49,14 @@ class _EditWorkoutState extends State<EditWorkout> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No', style: TextStyle(color: Colors.black)),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel,
+                    style: const TextStyle(color: Colors.black)),
               ),
               FlatButton(
                 color: Colors.red,
                 textColor: Colors.white,
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
+                child: Text(L10n.of(context).discard),
               ),
             ],
           ),
@@ -128,9 +129,9 @@ class _EditWorkoutState extends State<EditWorkout> {
       onPressed: () {
         Navigator.pop(context);
       },
-      child: const Text(
-        "Cancel",
-        style: TextStyle(color: Colors.black),
+      child: Text(
+        MaterialLocalizations.of(context).cancelButtonLabel,
+        style: const TextStyle(color: Colors.black),
       ),
     );
     final continueButton = FlatButton(
@@ -141,13 +142,13 @@ class _EditWorkoutState extends State<EditWorkout> {
             .removeWorkspace(workout.id);
         Navigator.popUntil(context, ModalRoute.withName('/home'));
       },
-      child: const Text("Delete"),
+      child: Text(L10n.of(context).delete),
     ); // set up the AlertDialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(L10n.of(context).confirmDiscardChanges),
+          content: Text(L10n.of(context).confirmDeleteWorkout),
           actions: [
             cancelButton,
             continueButton,
@@ -215,7 +216,7 @@ class _EditWorkoutState extends State<EditWorkout> {
                     builder: (BuildContext context) {
                       return RaisedButton.icon(
                         icon: const Icon(Icons.save),
-                        label: const Text('SAVE'),
+                        label: Text(L10n.of(context).save.toUpperCase()),
                         color: Colors.green,
                         textColor: Colors.white,
                         onPressed: _isChanged ? () => _save(context) : null,
@@ -232,6 +233,7 @@ class _EditWorkoutState extends State<EditWorkout> {
                       .asMap()
                       .entries
                       .map((e) => getLapItemWidget(
+                            context,
                             adjustedIndexList[e.key],
                             e.value,
                             onEdit: () => {_startEditLap(context, e.key)},
@@ -268,7 +270,7 @@ class _EditWorkoutState extends State<EditWorkout> {
   }
 }
 
-Widget getLapItemWidget(int index, LapItem lapItem,
+Widget getLapItemWidget(BuildContext context, int index, LapItem lapItem,
     {@required void Function() onEdit,
     @required void Function() onClone,
     @required void Function(DismissDirection direction) onDelete}) {
@@ -283,7 +285,7 @@ Widget getLapItemWidget(int index, LapItem lapItem,
             Flexible(
                 child: Container(
               padding: const EdgeInsets.all(12),
-              child: getLapListItem(index, lapItem),
+              child: getLapListItem(context, index, lapItem),
             )),
             Column(
               mainAxisSize: MainAxisSize.min,

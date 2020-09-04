@@ -2,6 +2,7 @@ import 'package:algolia/algolia.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
+import './l10n/l10n.dart';
 import './models/workout.dart';
 
 final algolia = Algolia.init(
@@ -78,14 +79,14 @@ class _EditLapDialogState extends State<EditLapDialog> {
     ];
 
     return AlertDialog(
-      title: const Text("Edit Lap"),
+      title: Text(L10n.of(context).editLap),
       content: SingleChildScrollView(
           child: Column(children: [
         TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
             controller: nameTextController,
-            decoration: const InputDecoration(
-              labelText: 'Name',
+            decoration: InputDecoration(
+              labelText: L10n.of(context).name,
             ),
           ),
           hideOnEmpty: true,
@@ -102,13 +103,13 @@ class _EditLapDialogState extends State<EditLapDialog> {
           },
         ),
         const Divider(),
-        getTimeSelectField('Time', draftTime, (int next) {
+        getTimeSelectField(L10n.of(context).time, draftTime, (int next) {
           setState(() {
             draftTime = next;
           });
         }),
         const Divider(),
-        getTimeSelectField('Rest', draftRest, (int next) {
+        getTimeSelectField(L10n.of(context).rest, draftRest, (int next) {
           setState(() {
             draftRest = next;
           });
@@ -117,7 +118,7 @@ class _EditLapDialogState extends State<EditLapDialog> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            const Text('Left and Right'),
+            Text(L10n.of(context).leftAndRight),
             Checkbox(
               value: draftIsLeftAndRight,
               onChanged: (bool val) {

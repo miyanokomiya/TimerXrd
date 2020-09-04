@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n.dart';
 import '../models/workout.dart';
 
-Column getLapListItem(int index, LapItem lapItem) {
+Column getLapListItem(BuildContext context, int index, LapItem lapItem) {
   return Column(mainAxisSize: MainAxisSize.min, children: [
     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Flexible(
@@ -36,7 +37,8 @@ Column getLapListItem(int index, LapItem lapItem) {
           )),
         Container(
           margin: const EdgeInsets.only(right: 12),
-          child: const Text('Rest', style: TextStyle(fontSize: 18)),
+          child:
+              Text(L10n.of(context).rest, style: const TextStyle(fontSize: 18)),
         ),
         Text('${lapItem.rest} s', style: const TextStyle(fontSize: 18)),
       ],

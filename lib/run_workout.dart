@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:wakelock/wakelock.dart';
+import './l10n/l10n.dart';
 import './models/workout.dart';
 
 AudioCache _player = AudioCache();
@@ -133,9 +134,10 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
           ),
           body: Center(
               child: Column(children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 16, bottom: 16),
-              child: Text('💪 Good Job 👍', style: TextStyle(fontSize: 36)),
+            Padding(
+              padding: const EdgeInsets.only(top: 16, bottom: 16),
+              child: Text('💪 ${L10n.of(context).goodJob} 👍',
+                  style: const TextStyle(fontSize: 36)),
             ),
             Expanded(
                 child: Container(
@@ -170,7 +172,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Text(
-                  getCurrentActText(),
+                  getCurrentActText(context),
                   style: const TextStyle(fontSize: 30),
                   textAlign: TextAlign.center,
                 ),
@@ -205,13 +207,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               ));
   }
 
-  String getCurrentActText() {
+  String getCurrentActText(BuildContext context) {
     if (lapState == LapState.ready) {
-      return 'Ready';
+      return L10n.of(context).ready;
     } else if (lapState == LapState.work) {
       return currentLap.name;
     } else {
-      return 'Rest';
+      return L10n.of(context).rest;
     }
   }
 
@@ -227,13 +229,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             )),
         Padding(
           padding: const EdgeInsets.all(4),
-          child: getNextActLabel(),
+          child: getNextActLabel(context),
         ),
       ],
     );
   }
 
-  Widget getNextActLabel() {
+  Widget getNextActLabel(BuildContext context) {
     if (lapState == LapState.ready) {
       return Text(
         '${currentLap.displayName} (${currentLap.time}s)',
@@ -242,7 +244,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       );
     } else if (lapState == LapState.work) {
       return Text(
-        'Rest (${currentLap.rest}s)',
+        '${L10n.of(context).rest} (${currentLap.rest}s)',
         style: const TextStyle(fontSize: 24),
         textAlign: TextAlign.center,
       );
@@ -255,13 +257,13 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text(
-            'Finish',
-            style: TextStyle(fontSize: 24),
+            L10n.of(context).finish,
+            style: const TextStyle(fontSize: 24),
             textAlign: TextAlign.center,
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(left: 8),
             child: Icon(Icons.done_all, color: Colors.green, size: 30),
           ),

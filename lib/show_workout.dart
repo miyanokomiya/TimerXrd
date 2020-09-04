@@ -37,7 +37,8 @@ class ShowWorkoutPage extends StatelessWidget {
             children: workout.lapItemList
                 .asMap()
                 .entries
-                .map((e) => getLapItemWidget(adjustedIndexList[e.key], e.value))
+                .map((e) => getLapItemWidget(
+                    context, adjustedIndexList[e.key], e.value))
                 .toList()),
       ),
       floatingActionButton: FloatingActionButton(
@@ -55,12 +56,12 @@ class ShowWorkoutPage extends StatelessWidget {
   }
 }
 
-Widget getLapItemWidget(int index, LapItem lapItem) {
+Widget getLapItemWidget(BuildContext context, int index, LapItem lapItem) {
   return Container(
     decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
     child: Container(
       padding: const EdgeInsets.all(12),
-      child: getLapListItem(index, lapItem),
+      child: getLapListItem(context, index, lapItem),
     ),
   );
 }

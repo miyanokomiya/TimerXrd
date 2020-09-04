@@ -1,6 +1,86 @@
 {
   "@@locale": "ja",
   "@@last_modified": "2020-09-04T20:25:03.340132",
+  "ready": "Ready",
+  "@ready": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "finish": "Finish",
+  "@finish": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "goodJob": "Good Job",
+  "@goodJob": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "workouts": "ワークアウト",
+  "@workouts": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "quickRun": "クイックラン",
+  "@quickRun": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noName": "無名",
+  "@noName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "保存",
+  "@save": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "削除",
+  "@delete": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discard": "破棄",
+  "@discard": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "workout": "ワークアウト",
+  "@workout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "lap": "ラップ",
+  "@lap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "name": "名前",
+  "@name": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "time": "タイム",
+  "@time": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "rest": "レスト",
+  "@rest": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editLap": "ラップ編集",
+  "@editLap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leftAndRight": "左右",
+  "@leftAndRight": {
+    "type": "text",
+    "placeholders": {}
+  },
   "confirmDeleteWorkout": "ワークアウトを削除しますか？",
   "@confirmDeleteWorkout": {
     "type": "text",

@@ -1,6 +1,86 @@
 {
   "@@locale": "messages",
-  "@@last_modified": "2020-09-04T21:44:08.358147",
+  "@@last_modified": "2020-09-05T01:39:00.115500",
+  "ready": "Ready",
+  "@ready": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "finish": "Finish",
+  "@finish": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "goodJob": "Good Job",
+  "@goodJob": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "workouts": "Workouts",
+  "@workouts": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "quickRun": "Quick Run",
+  "@quickRun": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noName": "no name",
+  "@noName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "Save",
+  "@save": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "Delete",
+  "@delete": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discard": "Discard",
+  "@discard": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "workout": "Workout",
+  "@workout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "lap": "Lap",
+  "@lap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "name": "Name",
+  "@name": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "time": "Time",
+  "@time": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "rest": "Rest",
+  "@rest": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editLap": "Edit Lap",
+  "@editLap": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leftAndRight": "Left and Right",
+  "@leftAndRight": {
+    "type": "text",
+    "placeholders": {}
+  },
   "confirmDeleteWorkout": "Are you sure to delete this workout?",
   "@confirmDeleteWorkout": {
     "type": "text",

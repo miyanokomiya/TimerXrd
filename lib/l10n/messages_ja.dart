@@ -22,6 +22,22 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "confirmDeleteWorkout" : MessageLookupByLibrary.simpleMessage("ワークアウトを削除しますか？"),
-    "confirmDiscardChanges" : MessageLookupByLibrary.simpleMessage("変更を破棄しますか？")
+    "confirmDiscardChanges" : MessageLookupByLibrary.simpleMessage("変更を破棄しますか？"),
+    "delete" : MessageLookupByLibrary.simpleMessage("削除"),
+    "discard" : MessageLookupByLibrary.simpleMessage("破棄"),
+    "editLap" : MessageLookupByLibrary.simpleMessage("ラップ編集"),
+    "finish" : MessageLookupByLibrary.simpleMessage("Finish"),
+    "goodJob" : MessageLookupByLibrary.simpleMessage("Good Job"),
+    "lap" : MessageLookupByLibrary.simpleMessage("ラップ"),
+    "leftAndRight" : MessageLookupByLibrary.simpleMessage("左右"),
+    "name" : MessageLookupByLibrary.simpleMessage("名前"),
+    "noName" : MessageLookupByLibrary.simpleMessage("無名"),
+    "quickRun" : MessageLookupByLibrary.simpleMessage("クイックラン"),
+    "ready" : MessageLookupByLibrary.simpleMessage("Ready"),
+    "rest" : MessageLookupByLibrary.simpleMessage("レスト"),
+    "save" : MessageLookupByLibrary.simpleMessage("保存"),
+    "time" : MessageLookupByLibrary.simpleMessage("タイム"),
+    "workout" : MessageLookupByLibrary.simpleMessage("ワークアウト"),
+    "workouts" : MessageLookupByLibrary.simpleMessage("ワークアウト")
   };
 }

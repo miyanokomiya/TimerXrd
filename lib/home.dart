@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './quickrun_page.dart';
+import './l10n/l10n.dart';
 import './workout_list_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,11 +25,13 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pageWidgets.elementAt(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.playlist_add), title: Text('Workouts')),
+              icon: const Icon(Icons.playlist_add),
+              title: Text(L10n.of(context).workouts)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.timer), title: Text('Quick Run')),
+              icon: const Icon(Icons.timer),
+              title: Text(L10n.of(context).quickRun)),
         ],
         currentIndex: _currentIndex,
         fixedColor: Colors.blueAccent,
