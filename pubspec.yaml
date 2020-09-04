@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   provider: ^4.0.0
   sqflite:
   path:
@@ -43,6 +45,7 @@ dev_dependencies:
     sdk: flutter
   lint: ^1.0.0
   flutter_launcher_icons:
+  intl_translation: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

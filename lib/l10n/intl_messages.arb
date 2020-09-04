@@ -1,0 +1,14 @@
+{
+  "@@locale": "messages",
+  "@@last_modified": "2020-09-04T21:44:08.358147",
+  "confirmDeleteWorkout": "Are you sure to delete this workout?",
+  "@confirmDeleteWorkout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDiscardChanges": "Will you discard your changes?",
+  "@confirmDiscardChanges": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

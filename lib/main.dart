@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import './home.dart';
+import './l10n/l10n.dart';
 import './store/workout_store.dart';
 
 Future<void> main() async {
@@ -15,6 +17,16 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) => WorkoutStore(),
         child: MaterialApp(
+          localizationsDelegates: const [
+            L10n.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('ja'),
+          ],
           title: 'Timer Xrd',
           theme: ThemeData(
             primarySwatch: Colors.blue,

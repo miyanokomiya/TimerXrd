@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './edit_lap_dialog.dart';
 import './edit_name_dialog.dart';
+import './l10n/l10n.dart';
 import './models/workout.dart';
 import './store/workout_store.dart';
 import './widgets/lap_item.dart';
@@ -19,19 +20,47 @@ class _EditWorkoutState extends State<EditWorkout> {
   Workout workout;
   final _controller = ScrollController();
 
+  Workout get workoutOrigin => context
+      .read<WorkoutStore>()
+      .workoutList
+      .firstWhere((element) => element.id == widget.id, orElse: () => null);
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        workout = context
-            .read<WorkoutStore>()
-            .workoutList
-            .firstWhere((element) => element.id == widget.id,
-                orElse: () => null)
-            .clone();
+        workout = workoutOrigin.clone();
       });
     });
+  }
+
+  bool get _isChanged => !workout.isEqual(workoutOrigin);
+
+  Future<bool> _onWillPop() async {
+    if (!_isChanged) {
+      return true;
+    }
+
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text(L10n.of(context).confirmDiscardChanges),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No', style: TextStyle(color: Colors.black)),
+              ),
+              FlatButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
   }
 
   void _createLap() {
@@ -99,9 +128,14 @@ class _EditWorkoutState extends State<EditWorkout> {
       onPressed: () {
         Navigator.pop(context);
       },
-      child: const Text("Cancel"),
+      child: const Text(
+        "Cancel",
+        style: TextStyle(color: Colors.black),
+      ),
     );
     final continueButton = FlatButton(
+      color: Colors.red,
+      textColor: Colors.white,
       onPressed: () async {
         await Provider.of<WorkoutStore>(context, listen: false)
             .removeWorkspace(workout.id);
@@ -113,8 +147,7 @@ class _EditWorkoutState extends State<EditWorkout> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm"),
-          content: const Text('Are you sure to delete this workout?'),
+          content: Text(L10n.of(context).confirmDiscardChanges),
           actions: [
             cancelButton,
             continueButton,
@@ -129,7 +162,9 @@ class _EditWorkoutState extends State<EditWorkout> {
       await Provider.of<WorkoutStore>(context, listen: false)
           .updateWorkspace(widget.id, workout.clone());
       Scaffold.of(context).showSnackBar(const SnackBar(
-          content: Text('Saved !!', style: TextStyle(fontSize: 24))));
+          content: Text('Saved!!', style: TextStyle(fontSize: 24))));
+      // update '_isChanged'
+      setState(() {});
     } catch (_) {
       Scaffold.of(context).showSnackBar(const SnackBar(
         content: Text(
@@ -158,74 +193,78 @@ class _EditWorkoutState extends State<EditWorkout> {
 
     final adjustedIndexList = workout.adjustedIndexList;
 
-    return Scaffold(
-        appBar: AppBar(
-            title: GestureDetector(
-              onTap: () {
-                _startEditName(context);
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.white))),
-                child: Text(
-                  workout.displayName,
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            appBar: AppBar(
+                title: GestureDetector(
+                  onTap: () {
+                    _startEditName(context);
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        border:
+                            Border(bottom: BorderSide(color: Colors.white))),
+                    child: Text(
+                      workout.displayName,
+                    ),
+                  ),
                 ),
-              ),
+                actions: [
+                  Builder(
+                    builder: (BuildContext context) {
+                      return RaisedButton.icon(
+                        icon: const Icon(Icons.save),
+                        label: const Text('SAVE'),
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        onPressed: _isChanged ? () => _save(context) : null,
+                        disabledColor: Colors.grey,
+                      );
+                    },
+                  ),
+                ]),
+            body: Center(
+              child: ReorderableListView(
+                  scrollController: _controller,
+                  onReorder: _onReorder,
+                  children: workout.lapItemList
+                      .asMap()
+                      .entries
+                      .map((e) => getLapItemWidget(
+                            adjustedIndexList[e.key],
+                            e.value,
+                            onEdit: () => {_startEditLap(context, e.key)},
+                            onClone: () => {_cloneLap(e.key)},
+                            onDelete: (_) => {_deleteLap(e.key)},
+                          ))
+                      .toList()),
             ),
-            actions: [
-              Builder(
-                builder: (BuildContext context) {
-                  return RaisedButton.icon(
-                    icon: const Icon(Icons.save),
-                    label: const Text('SAVE'),
-                    color: Colors.green,
-                    textColor: Colors.white,
-                    onPressed: () => _save(context),
-                  );
-                },
-              ),
-            ]),
-        body: Center(
-          child: ReorderableListView(
-              scrollController: _controller,
-              onReorder: _onReorder,
-              children: workout.lapItemList
-                  .asMap()
-                  .entries
-                  .map((e) => getLapItemWidget(
-                        adjustedIndexList[e.key],
-                        e.value,
-                        onEdit: () => {_startEditLap(context, e.key)},
-                        onClone: () => {_cloneLap(e.key)},
-                        onDelete: (_) => {_deleteLap(e.key)},
-                      ))
-                  .toList()),
-        ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24),
-              child: FloatingActionButton(
-                heroTag: 'delete',
-                mini: true,
-                onPressed: () => _delete(context),
-                backgroundColor: Colors.grey,
-                tooltip: 'Delete this workout',
-                child: const Icon(
-                  Icons.delete,
-                  size: 16,
+            floatingActionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 24),
+                  child: FloatingActionButton(
+                    heroTag: 'delete',
+                    mini: true,
+                    onPressed: () => _delete(context),
+                    backgroundColor: Colors.grey,
+                    tooltip: 'Delete this workout',
+                    child: const Icon(
+                      Icons.delete,
+                      size: 16,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            FloatingActionButton(
-              heroTag: 'add',
-              onPressed: _createLap,
-              tooltip: 'Create a lap',
-              child: const Icon(Icons.add),
-            ),
-          ],
-        ));
+                FloatingActionButton(
+                  heroTag: 'add',
+                  onPressed: _createLap,
+                  tooltip: 'Create a lap',
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            )));
   }
 }
 

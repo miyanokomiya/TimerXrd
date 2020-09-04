@@ -60,6 +60,15 @@ class Workout {
       'name': name,
     };
   }
+
+  bool isEqual(Workout b) {
+    if (name != b.name) return false;
+    if (lapItemList.length != b.lapItemList.length) return false;
+    for (var i = 0; i < lapItemList.length; i++) {
+      if (!lapItemList[i].isEqual(b.lapItemList[i])) return false;
+    }
+    return true;
+  }
 }
 
 class LapGroup {
@@ -109,6 +118,14 @@ class LapItem {
       'rest': rest,
       'is_left_and_right': isLeftAndRight ? 1 : 0,
     };
+  }
+
+  bool isEqual(LapItem b) {
+    if (name != b.name) return false;
+    if (time != b.time) return false;
+    if (rest != b.rest) return false;
+    if (isLeftAndRight != b.isLeftAndRight) return false;
+    return true;
   }
 
   List<LapItem> expandLapItemList() {

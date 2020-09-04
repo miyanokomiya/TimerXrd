@@ -1,0 +1,14 @@
+{
+  "@@locale": "ja",
+  "@@last_modified": "2020-09-04T20:25:03.340132",
+  "confirmDeleteWorkout": "ワークアウトを削除しますか？",
+  "@confirmDeleteWorkout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDiscardChanges": "変更を破棄しますか？",
+  "@confirmDiscardChanges": {
+    "type": "text",
+    "placeholders": {}
+  }
+}
