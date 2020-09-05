@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './edit_lap_dialog.dart';
+import './l10n/l10n.dart';
 import './models/workout.dart';
 import './run_workout.dart';
 
@@ -55,26 +56,30 @@ class _QuickrunPageState extends State<QuickrunPage> {
           children: [
             Container(
                 padding: const EdgeInsets.all(10),
-                child: const Text('Quick Run', style: TextStyle(fontSize: 36))),
+                child: Text(L10n.of(context).quickRun,
+                    style: const TextStyle(fontSize: 36))),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Column(
                 children: [
-                  getTimeSelectField('Time', draftTime, (int next) {
+                  getTimeSelectField(L10n.of(context).time, draftTime,
+                      (int next) {
                     setState(() {
                       draftTime = next;
                       _save('time', next);
                     });
                   }),
                   const Divider(),
-                  getTimeSelectField('Rest', draftRest, (int next) {
+                  getTimeSelectField(L10n.of(context).rest, draftRest,
+                      (int next) {
                     setState(() {
                       draftRest = next;
                       _save('rest', next);
                     });
                   }),
                   const Divider(),
-                  getTimeSelectField('Repeat', draftRepeat, (int next) {
+                  getTimeSelectField(L10n.of(context).repeat, draftRepeat,
+                      (int next) {
                     setState(() {
                       draftRepeat = next;
                       _save('repeat', next);
@@ -93,11 +98,12 @@ class _QuickrunPageState extends State<QuickrunPage> {
                 MaterialPageRoute(
                     builder: (context) => RunWorkoutPage(
                         workout: Workout(
-                            name: 'Quick run',
+                            name: L10n.of(context).quickRun,
                             lapItemList:
                                 List.generate(draftRepeat, (index) => index)
                                     .map((index) => LapItem(
-                                          name: 'Lap ${index + 1}',
+                                          name:
+                                              '${L10n.of(context).lap} ${index + 1}',
                                           time: draftTime,
                                           rest: draftRest,
                                         ))

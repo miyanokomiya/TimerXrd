@@ -71,6 +71,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "repeat": "繰り返し",
+  "@repeat": {
+    "type": "text",
+    "placeholders": {}
+  },
   "editLap": "ラップ編集",
   "@editLap": {
     "type": "text",

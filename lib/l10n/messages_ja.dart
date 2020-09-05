@@ -34,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noName" : MessageLookupByLibrary.simpleMessage("無名"),
     "quickRun" : MessageLookupByLibrary.simpleMessage("クイックラン"),
     "ready" : MessageLookupByLibrary.simpleMessage("Ready"),
+    "repeat" : MessageLookupByLibrary.simpleMessage("繰り返し"),
     "rest" : MessageLookupByLibrary.simpleMessage("レスト"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "time" : MessageLookupByLibrary.simpleMessage("タイム"),

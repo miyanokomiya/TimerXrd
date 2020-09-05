@@ -1,6 +1,6 @@
 {
   "@@locale": "messages",
-  "@@last_modified": "2020-09-05T01:39:00.115500",
+  "@@last_modified": "2020-09-05T10:14:55.370258",
   "ready": "Ready",
   "@ready": {
     "type": "text",
@@ -68,6 +68,11 @@
   },
   "rest": "Rest",
   "@rest": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "repeat": "Repeat",
+  "@repeat": {
     "type": "text",
     "placeholders": {}
   },

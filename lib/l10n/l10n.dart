@@ -90,6 +90,10 @@ class L10n {
     'Rest',
     name: 'rest',
   );
+  String get repeat => Intl.message(
+    'Repeat',
+    name: 'repeat',
+  );
   String get editLap => Intl.message(
     'Edit Lap',
     name: 'editLap',
