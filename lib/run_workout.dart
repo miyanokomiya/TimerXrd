@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:share/share.dart';
 import 'package:wakelock/wakelock.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
@@ -128,36 +129,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     if (currentLap == null) {
-      return Scaffold(
-          appBar: AppBar(
-            title: Text(workout.displayName),
-          ),
-          body: Center(
-              child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
-              child: Text('💪 ${L10n.of(context).goodJob} 👍',
-                  style: const TextStyle(fontSize: 36)),
-            ),
-            Expanded(
-                child: Container(
-              decoration:
-                  const BoxDecoration(border: Border(top: BorderSide())),
-              child: ListView(
-                  children: expandedLapItemList
-                      .asMap()
-                      .entries
-                      .map((e) => getLapItemWidget(e.key, e.value))
-                      .toList()
-                        ..add(Container(height: 80))),
-            ))
-          ])),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _restart,
-            tooltip: 'Restart',
-            backgroundColor: Colors.green,
-            child: const Icon(Icons.repeat),
-          ));
+      return getGoodJobWidget(context);
     }
 
     return Scaffold(
@@ -205,6 +177,40 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 backgroundColor: Colors.green,
                 child: const Icon(Icons.play_arrow, size: 36),
               ));
+  }
+
+  Scaffold getGoodJobWidget(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(workout.displayName),
+        ),
+        body: Center(
+            child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 16),
+            child: Text('💪 ${L10n.of(context).goodJob} 👍',
+                style: const TextStyle(fontSize: 36)),
+          ),
+          Expanded(
+              child: Container(
+            decoration: const BoxDecoration(border: Border(top: BorderSide())),
+            child: ListView(
+                children: expandedLapItemList
+                    .asMap()
+                    .entries
+                    .map((e) => getLapItemWidget(e.key, e.value))
+                    .toList()
+                      ..add(Container(height: 80))),
+          ))
+        ])),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Share.share(getSharedText(workout));
+          },
+          tooltip: 'Share',
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.share),
+        ));
   }
 
   String getCurrentActText(BuildContext context) {
@@ -362,4 +368,15 @@ Widget getLapItemWidget(int index, LapItem lapItem) {
           Text('${lapItem.time} s', style: const TextStyle(fontSize: 18)),
         ]),
       ));
+}
+
+String getSharedText(Workout workout) {
+  final adjustedIndexList = workout.adjustedIndexList;
+  return '💪 Done 👍\n${workout.lapItemList.asMap().entries.map((element) {
+    final number = adjustedIndexList[element.key] + 1;
+    if (element.value.isLeftAndRight) {
+      return '$number-${number + 1}. ${element.value.displayName} (LR)';
+    }
+    return '$number. ${element.value.displayName}';
+  }).join('\n')}';
 }
