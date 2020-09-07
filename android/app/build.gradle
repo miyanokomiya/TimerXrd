@@ -28,7 +28,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -41,7 +41,7 @@ android {
     defaultConfig {
         applicationId "tokyo.miyanokomiya.TimerXrd"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -67,7 +67,7 @@ android {
         }
         release {
             resValue "string", "app_name", "TimerXrd"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
