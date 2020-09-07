@@ -30,15 +30,15 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   static const int stepMS = 20;
   static const int readyTime = 5;
 
-  int lapIndex;
-  double time;
+  int lapIndex = 0;
+  double time = 0;
   Timer timer;
-  LapState lapState;
+  LapState lapState = LapState.ready;
   AudioPlayer _ap;
 
   Workout get workout => widget.workout;
 
-  List<LapItem> get expandedLapItemList => workout.expandedLapItemList;
+  List<LapItem> get expandedLapItemList => workout?.expandedLapItemList ?? [];
 
   LapItem get currentLap => expandedLapItemList.length > lapIndex
       ? expandedLapItemList[lapIndex]
@@ -52,7 +52,9 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void initState() {
     super.initState();
     Wakelock.enable();
-    _restart();
+    _player.load('sounds/countdown.mp3').then((_) {
+      _restart();
+    });
   }
 
   @override
@@ -64,14 +66,21 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     _ap = null;
   }
 
+  Future<void> _playSound() async {
+    if (_ap != null) {
+      await _ap.seek(const Duration());
+      await _ap.resume();
+    } else {
+      _ap = await _player.play('sounds/countdown.mp3');
+    }
+  }
+
   void _onTimer(Timer timer) {
     setState(() {
       time -= stepMS / 1000;
       // 3.2 looks good timing
       if ((time - 3.2).abs() < 0.01) {
-        _ap?.dispose();
-        _ap = null;
-        _player.play('sounds/countdown.mp3').then((value) => _ap = value);
+        _playSound();
       } else if (time < 0) {
         switch (lapState) {
           case LapState.ready:
@@ -86,10 +95,6 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             lapIndex++;
             if (currentLap == null) {
               timer.cancel();
-              Future.delayed(const Duration(seconds: 3)).then((_) {
-                _ap?.dispose();
-                _ap = null;
-              });
               return;
             }
             lapState = LapState.work;
@@ -102,14 +107,14 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
 
   void _pause() {
     setState(() {
-      _ap?.dispose();
-      _ap = null;
+      _ap?.pause();
       timer.cancel();
     });
   }
 
   void _play() {
     setState(() {
+      _ap?.resume();
       timer = Timer.periodic(
         const Duration(milliseconds: stepMS),
         _onTimer,
@@ -164,7 +169,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 style: TextStyle(fontSize: 16)),
           )
         ])),
-        floatingActionButton: timer.isActive
+        floatingActionButton: timer?.isActive ?? false
             ? FloatingActionButton(
                 onPressed: _pause,
                 tooltip: 'Pause',
