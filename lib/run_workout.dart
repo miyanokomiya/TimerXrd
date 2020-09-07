@@ -375,8 +375,8 @@ String getSharedText(Workout workout) {
   return '💪 Done 👍\n${workout.lapItemList.asMap().entries.map((element) {
     final number = adjustedIndexList[element.key] + 1;
     if (element.value.isLeftAndRight) {
-      return '$number-${number + 1}. ${element.value.displayName} (LR)';
+      return '$number-${number + 1}. ${element.value.displayName}(LR) ${element.value.time}s';
     }
-    return '$number. ${element.value.displayName}';
+    return '$number. ${element.value.displayName} ${element.value.time}s';
   }).join('\n')}';
 }
