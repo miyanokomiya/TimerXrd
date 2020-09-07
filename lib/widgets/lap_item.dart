@@ -12,7 +12,7 @@ Column getLapListItem(BuildContext context, int index, LapItem lapItem) {
           overflow: TextOverflow.ellipsis,
         ),
       ),
-      Text('${lapItem.time} s', style: const TextStyle(fontSize: 16)),
+      Text('${lapItem.time}s', style: const TextStyle(fontSize: 16)),
     ]),
     const Divider(
       color: Colors.black,
@@ -40,7 +40,7 @@ Column getLapListItem(BuildContext context, int index, LapItem lapItem) {
           child:
               Text(L10n.of(context).rest, style: const TextStyle(fontSize: 18)),
         ),
-        Text('${lapItem.rest} s', style: const TextStyle(fontSize: 18)),
+        Text('${lapItem.rest}s', style: const TextStyle(fontSize: 18)),
       ],
     )
   ]);

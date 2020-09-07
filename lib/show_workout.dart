@@ -33,13 +33,34 @@ class ShowWorkoutPage extends StatelessWidget {
             })
       ]),
       body: Center(
-        child: ListView(
-            children: workout.lapItemList
-                .asMap()
-                .entries
-                .map((e) => getLapItemWidget(
-                    context, adjustedIndexList[e.key], e.value))
-                .toList()),
+        child: ListView(children: [
+          Container(
+            decoration:
+                const BoxDecoration(border: Border(bottom: BorderSide())),
+            child: Container(
+              color: const Color.fromRGBO(200, 200, 200, 1),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Flexible(
+                      child: Text(
+                        '0. Ready',
+                        style: TextStyle(fontSize: 20),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text('15s', style: TextStyle(fontSize: 16)),
+                  ]),
+            ),
+          ),
+          ...workout.lapItemList
+              .asMap()
+              .entries
+              .map((e) =>
+                  getLapItemWidget(context, adjustedIndexList[e.key], e.value))
+              .toList()
+        ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

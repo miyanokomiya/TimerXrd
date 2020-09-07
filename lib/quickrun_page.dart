@@ -62,6 +62,19 @@ class _QuickrunPageState extends State<QuickrunPage> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Column(
                 children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Flexible(
+                          child: Text(
+                            'Ready',
+                            style: TextStyle(fontSize: 20),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text('15s', style: TextStyle(fontSize: 20)),
+                      ]),
+                  const Divider(),
                   getTimeSelectField(L10n.of(context).time, draftTime,
                       (int next) {
                     setState(() {

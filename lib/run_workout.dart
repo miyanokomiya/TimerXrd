@@ -28,7 +28,7 @@ enum LapState {
 
 class _RunWorkoutPageState extends State<RunWorkoutPage> {
   static const int stepMS = 20;
-  static const int readyTime = 5;
+  static const int readyTime = 15;
 
   int lapIndex = 0;
   double time = 0;
