@@ -95,5 +95,15 @@
   "@confirmDiscardChanges": {
     "type": "text",
     "placeholders": {}
+  },
+  "configTitle": "設定",
+  "@configTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configHideTimer": "タイマー非表示",
+  "@configHideTimer": {
+    "type": "text",
+    "placeholders": {}
   }
 }

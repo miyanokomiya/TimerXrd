@@ -33,11 +33,10 @@ class _QuickrunPageState extends State<QuickrunPage> {
         draftRest = prefs.getInt('$prefix:rest') ?? draftRest;
         draftRepeat = prefs.getInt('$prefix:repeat') ?? draftRepeat;
       });
-    } catch (_) {
+    } finally {
       setState(() {
         ready = true;
       });
-      rethrow;
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "@@locale": "messages",
-  "@@last_modified": "2020-09-05T10:14:55.370258",
+  "@@last_modified": "2020-09-16T23:11:35.080755",
   "ready": "Ready",
   "@ready": {
     "type": "text",
@@ -93,6 +93,16 @@
   },
   "confirmDiscardChanges": "Will you discard your changes?",
   "@confirmDiscardChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configTitle": "Config",
+  "@configTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configHideTimer": "Hide Timer",
+  "@configHideTimer": {
     "type": "text",
     "placeholders": {}
   }

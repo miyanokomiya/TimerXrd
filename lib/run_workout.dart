@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
@@ -35,6 +36,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   Timer timer;
   LapState lapState = LapState.ready;
   AudioPlayer _ap;
+  bool hideTimer = false;
 
   Workout get workout => widget.workout;
 
@@ -54,6 +56,11 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
     Wakelock.enable();
     _player.load('sounds/countdown.mp3').then((_) {
       _restart();
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        hideTimer = prefs.getBool('config:hideTimer') ?? hideTimer;
+      });
     });
   }
 
@@ -157,7 +164,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 24),
                 child: getCountDownWidget(
-                    lapState, _getLapTime(lapState, currentLap), time),
+                    lapState, _getLapTime(lapState, currentLap), time,
+                    hideTimer: hideTimer),
               ),
               getNextActWidget(),
             ])),
@@ -284,15 +292,18 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   }
 }
 
-Widget getCountDownWidget(LapState state, int range, double current) {
+Widget getCountDownWidget(LapState state, int range, double current,
+    {bool hideTimer = false}) {
+  final _hideTimer = hideTimer && state == LapState.work;
   return CustomPaint(
       painter: CirclePainter(
-          radian: (current / range) * 2 * pi, color: _getLapStateColor(state)),
+          radian: (_hideTimer ? 1.0 : current / range) * 2 * pi,
+          color: _getLapStateColor(state)),
       child: Container(
           height: 320,
           child: Center(
               child: Text(
-            current.ceil().toStringAsFixed(0),
+            _hideTimer ? '$range' : current.ceil().toStringAsFixed(0),
             style: const TextStyle(fontSize: 60),
           ))));
 }

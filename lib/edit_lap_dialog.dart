@@ -86,7 +86,9 @@ class _EditLapDialogState extends State<EditLapDialog> {
           alignment: Alignment.bottomCenter,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           color: Colors.blue,
-          child: Image.asset('assets/images/search-by-algolia-dark-background.png', height: 20),
+          child: Image.asset(
+              'assets/images/search-by-algolia-dark-background.png',
+              height: 20),
         ),
         TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './quickrun_page.dart';
+import './config_page.dart';
 import './l10n/l10n.dart';
+import './quickrun_page.dart';
 import './workout_list_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +14,7 @@ class _HomePageState extends State<HomePage> {
   final _pageWidgets = [
     WorkoutListPage(),
     QuickrunPage(),
+    ConfigPage(),
   ];
 
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
@@ -32,6 +34,9 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: const Icon(Icons.timer),
               title: Text(L10n.of(context).quickRun)),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.settings),
+              title: Text(L10n.of(context).configTitle)),
         ],
         currentIndex: _currentIndex,
         fixedColor: Colors.blueAccent,
