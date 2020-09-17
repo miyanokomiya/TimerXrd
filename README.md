@@ -1,8 +1,6 @@
 # TimerXrd
 
-A new Flutter project.
-
-https://miyanokomiya.github.io/TimerXrd/
+https://play.google.com/store/apps/details?id=tokyo.miyanokomiya.TimerXrd
 
 ## Env
 Create the file `.env`.
