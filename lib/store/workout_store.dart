@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/workout.dart';
 
+const String configPrefix = 'config';
+
 class WorkoutStore with ChangeNotifier {
+  SharedPreferences prefs;
   List<Workout> workoutList = [];
+  bool hideTimer = false;
 
   Future<void> loadValue() async {
     debugPrint('loadValue');
@@ -24,7 +29,8 @@ class WorkoutStore with ChangeNotifier {
               .toList());
     });
 
-    // notifyListeners();
+    prefs = await SharedPreferences.getInstance();
+    hideTimer = prefs.getBool('$configPrefix:hideTimer') ?? hideTimer;
   }
 
   Future<void> removeWorkspace(int id) async {
@@ -81,6 +87,14 @@ class WorkoutStore with ChangeNotifier {
     final itemIndex = workoutList.indexWhere((element) => element.id == id);
     workoutList[itemIndex] = workout;
     notifyListeners();
+  }
+
+  Future<void> updateConfig({bool hideTimer}) async {
+    if (prefs != null) {
+      await prefs.setBool('$configPrefix:hideTimer', hideTimer ?? this.hideTimer);
+      this.hideTimer = hideTimer ?? this.hideTimer;
+      notifyListeners();
+    }
   }
 }
 
@@ -140,4 +154,3 @@ const Map<String, List<String>> scripts = {
     """,
   ],
 };
-

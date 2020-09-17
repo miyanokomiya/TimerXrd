@@ -4,11 +4,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
+import './store/workout_store.dart';
 
 AudioCache _player = AudioCache();
 
@@ -144,6 +146,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       return getGoodJobWidget(context);
     }
 
+    final store = Provider.of<WorkoutStore>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(workout.displayName),
@@ -165,7 +168,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
                 padding: const EdgeInsets.only(top: 24),
                 child: getCountDownWidget(
                     lapState, _getLapTime(lapState, currentLap), time,
-                    hideTimer: hideTimer),
+                    hideTimer: store.hideTimer),
               ),
               getNextActWidget(),
             ])),

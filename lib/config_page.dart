@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import './l10n/l10n.dart';
+import './store/workout_store.dart';
 
 class ConfigPage extends StatefulWidget {
   @override
@@ -8,40 +9,16 @@ class ConfigPage extends StatefulWidget {
 }
 
 class _ConfigPageState extends State<ConfigPage> {
-  final String prefix = 'config';
-  SharedPreferences prefs;
-  bool hideTimer = false;
   bool ready = false;
 
   @override
   void initState() {
     super.initState();
-    _initPrefs();
-  }
-
-  Future<void> _initPrefs() async {
-    try {
-      final _prefs = await SharedPreferences.getInstance();
-      setState(() {
-        prefs = _prefs;
-        hideTimer = prefs.getBool('$prefix:hideTimer') ?? hideTimer;
-      });
-    } finally {
-      setState(() {
-        ready = true;
-      });
-    }
-  }
-
-  void _saveBool(String key, bool value) {
-    if (prefs != null) {
-      prefs.setBool('$prefix:$key', value);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!ready && prefs == null) return Scaffold(body: Container());
+    final store = Provider.of<WorkoutStore>(context);
 
     return Scaffold(
         body: Column(
@@ -59,12 +36,9 @@ class _ConfigPageState extends State<ConfigPage> {
                   ),
                 ),
                 Checkbox(
-                  value: hideTimer,
-                  onChanged: (bool val) {
-                    _saveBool('hideTimer', val);
-                    setState(() {
-                      hideTimer = val;
-                    });
+                  value: store.hideTimer,
+                  onChanged: (bool val) async {
+                    await store.updateConfig(hideTimer: val);
                   },
                 )
               ]),
