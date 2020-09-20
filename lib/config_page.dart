@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './l10n/l10n.dart';
 import './store/workout_store.dart';
+import './widgets/form_fields.dart';
 
 class ConfigPage extends StatefulWidget {
   @override
@@ -27,6 +28,10 @@ class _ConfigPageState extends State<ConfigPage> {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
+              getTimeSelectField(L10n.of(context).ready, store.workoutConfig.ready,
+                  (int val) async {
+                await store.updateConfig(ready: val);
+              }),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Flexible(
                   child: Text(
@@ -36,7 +41,7 @@ class _ConfigPageState extends State<ConfigPage> {
                   ),
                 ),
                 Checkbox(
-                  value: store.hideTimer,
+                  value: store.workoutConfig.hideTimer,
                   onChanged: (bool val) async {
                     await store.updateConfig(hideTimer: val);
                   },

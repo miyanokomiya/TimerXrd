@@ -139,3 +139,10 @@ class LapItem {
     return list;
   }
 }
+
+class WorkoutConfig {
+  bool hideTimer;
+  int ready;
+
+  WorkoutConfig({this.hideTimer = false, this.ready = 15});
+}

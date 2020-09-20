@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './edit_lap_dialog.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
 import './run_workout.dart';
+import './store/workout_store.dart';
+import './widgets/form_fields.dart';
 
 class QuickrunPage extends StatefulWidget {
   @override
@@ -50,6 +52,8 @@ class _QuickrunPageState extends State<QuickrunPage> {
   Widget build(BuildContext context) {
     if (!ready && prefs == null) return Scaffold(body: Container());
 
+    final workoutConfig =
+        context.select((WorkoutStore store) => store.workoutConfig);
     return Scaffold(
         body: Column(
           children: [
@@ -63,15 +67,16 @@ class _QuickrunPageState extends State<QuickrunPage> {
                 children: [
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Flexible(
+                      children: [
+                        const Flexible(
                           child: Text(
                             'Ready',
                             style: TextStyle(fontSize: 20),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text('15s', style: TextStyle(fontSize: 20)),
+                        Text('${workoutConfig.ready}s',
+                            style: const TextStyle(fontSize: 20)),
                       ]),
                   const Divider(),
                   getTimeSelectField(L10n.of(context).time, draftTime,
@@ -109,6 +114,7 @@ class _QuickrunPageState extends State<QuickrunPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => RunWorkoutPage(
+                        workoutConfig: workoutConfig,
                         workout: Workout(
                             name: L10n.of(context).quickRun,
                             lapItemList:

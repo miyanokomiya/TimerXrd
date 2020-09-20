@@ -9,7 +9,7 @@ const String configPrefix = 'config';
 class WorkoutStore with ChangeNotifier {
   SharedPreferences prefs;
   List<Workout> workoutList = [];
-  bool hideTimer = false;
+  WorkoutConfig workoutConfig = WorkoutConfig();
 
   Future<void> loadValue() async {
     debugPrint('loadValue');
@@ -30,7 +30,10 @@ class WorkoutStore with ChangeNotifier {
     });
 
     prefs = await SharedPreferences.getInstance();
-    hideTimer = prefs.getBool('$configPrefix:hideTimer') ?? hideTimer;
+    workoutConfig.hideTimer =
+        prefs.getBool('$configPrefix:hideTimer') ?? workoutConfig.hideTimer;
+    workoutConfig.ready =
+        prefs.getInt('$configPrefix:ready') ?? workoutConfig.ready;
   }
 
   Future<void> removeWorkspace(int id) async {
@@ -89,10 +92,13 @@ class WorkoutStore with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateConfig({bool hideTimer}) async {
+  Future<void> updateConfig({bool hideTimer, int ready}) async {
     if (prefs != null) {
-      await prefs.setBool('$configPrefix:hideTimer', hideTimer ?? this.hideTimer);
-      this.hideTimer = hideTimer ?? this.hideTimer;
+      await prefs.setBool(
+          '$configPrefix:hideTimer', hideTimer ?? workoutConfig.hideTimer);
+      await prefs.setInt('$configPrefix:ready', ready ?? workoutConfig.ready);
+      workoutConfig.hideTimer = hideTimer ?? workoutConfig.hideTimer;
+      workoutConfig.ready = ready ?? workoutConfig.ready;
       notifyListeners();
     }
   }

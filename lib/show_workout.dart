@@ -15,6 +15,8 @@ class ShowWorkoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final workout = context.select((WorkoutStore store) => store.workoutList
         .firstWhere((element) => element.id == id, orElse: () => null));
+    final workoutConfig =
+        context.select((WorkoutStore store) => store.workoutConfig);
 
     if (workout == null) {
       return Scaffold(appBar: AppBar(title: const Text('No data')));
@@ -42,15 +44,16 @@ class ShowWorkoutPage extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Flexible(
+                  children: [
+                    const Flexible(
                       child: Text(
                         '0. Ready',
                         style: TextStyle(fontSize: 20),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text('15s', style: TextStyle(fontSize: 16)),
+                    Text('${workoutConfig.ready}s',
+                        style: const TextStyle(fontSize: 16)),
                   ]),
             ),
           ),
@@ -67,7 +70,8 @@ class ShowWorkoutPage extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => RunWorkoutPage(workout: workout)));
+                  builder: (context) => RunWorkoutPage(
+                      workout: workout, workoutConfig: workoutConfig)));
         },
         tooltip: 'Run',
         backgroundColor: Colors.green,

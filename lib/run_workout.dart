@@ -4,20 +4,21 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
-import './store/workout_store.dart';
 
 AudioCache _player = AudioCache();
 
 class RunWorkoutPage extends StatefulWidget {
   final Workout workout;
+  final WorkoutConfig workoutConfig;
 
-  const RunWorkoutPage({Key key, @required this.workout}) : super(key: key);
+  const RunWorkoutPage(
+      {Key key, @required this.workout, @required this.workoutConfig})
+      : super(key: key);
 
   @override
   _RunWorkoutPageState createState() => _RunWorkoutPageState();
@@ -31,7 +32,6 @@ enum LapState {
 
 class _RunWorkoutPageState extends State<RunWorkoutPage> {
   static const int stepMS = 20;
-  static const int readyTime = 15;
 
   int lapIndex = 0;
   double time = 0;
@@ -41,6 +41,8 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   bool hideTimer = false;
 
   Workout get workout => widget.workout;
+
+  WorkoutConfig get workoutConfig => widget.workoutConfig;
 
   List<LapItem> get expandedLapItemList => workout?.expandedLapItemList ?? [];
 
@@ -134,7 +136,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
   void _restart() {
     setState(() {
       lapIndex = 0;
-      time = readyTime.toDouble();
+      time = workoutConfig.ready.toDouble();
       lapState = LapState.ready;
       _play();
     });
@@ -146,7 +148,6 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       return getGoodJobWidget(context);
     }
 
-    final store = Provider.of<WorkoutStore>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(workout.displayName),
@@ -166,9 +167,9 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 24),
-                child: getCountDownWidget(
-                    lapState, _getLapTime(lapState, currentLap), time,
-                    hideTimer: store.hideTimer),
+                child: getCountDownWidget(lapState,
+                    _getLapTime(lapState, currentLap, workoutConfig), time,
+                    hideTimer: workoutConfig.hideTimer),
               ),
               getNextActWidget(),
             ])),
@@ -345,10 +346,11 @@ class CirclePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-int _getLapTime(LapState lapState, LapItem lapItem) {
+int _getLapTime(
+    LapState lapState, LapItem lapItem, WorkoutConfig workoutConfig) {
   switch (lapState) {
     case LapState.ready:
-      return _RunWorkoutPageState.readyTime;
+      return workoutConfig.ready;
     case LapState.work:
       return lapItem.time;
     default:
