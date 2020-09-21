@@ -13,7 +13,6 @@ class WorkoutStore with ChangeNotifier {
   WorkoutConfig workoutConfig = WorkoutConfig();
 
   Future<void> loadValue() async {
-    debugPrint('loadValue');
     final db = await getDataBase();
     final List<Map> maps = await db.rawQuery('SELECT * FROM workout');
     final List<Map> lapItemMaps =
@@ -73,7 +72,6 @@ class WorkoutStore with ChangeNotifier {
   }
 
   Future<void> updateWorkspace(int id, Workout workout) async {
-    print(workout);
     final db = await getDataBase();
     await db.transaction((txn) async {
       await txn.update('Workout', workout.toMap(),
@@ -82,7 +80,6 @@ class WorkoutStore with ChangeNotifier {
           .delete('lap_item', where: 'workout_id = ?', whereArgs: [workout.id]);
       final batch = txn.batch();
       workout.lapItemList.asMap().entries.forEach((e) async {
-        print(e.value);
         final map = e.value.toMap();
         map['workout_id'] = workout.id;
         map['item_index'] = e.key;
@@ -113,7 +110,7 @@ Future<void> saveDoneLog(Workout workout) async {
     final id =
         await txn.insert('done_log', DoneLog.fromWorkout(workout).toMap());
     final batch = txn.batch();
-    for (var e in workout.lapItemList) {
+    for (final e in workout.lapItemList) {
       batch.insert('done_log_item', {
         'done_log_id': id,
         'lap_name': e.name,
@@ -172,11 +169,11 @@ Future<Database> getDataBase() async {
           FOREIGN KEY (workout_id) REFERENCES workout(id) ON UPDATE CASCADE ON DELETE CASCADE
         );
         """);
-      onUpgrade(db, 1, version);
+      await onUpgrade(db, 1, version);
     },
     onUpgrade: onUpgrade,
   );
-  database.execute('PRAGMA foreign_keys=ON;');
+  await database.execute('PRAGMA foreign_keys=ON;');
   return database;
 }
 

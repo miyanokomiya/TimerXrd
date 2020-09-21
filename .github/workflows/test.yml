@@ -30,4 +30,5 @@ jobs:
       - run: flutter pub get
       - run: touch .env
       - run: flutter test
+      - run: flutter driver --target=test_driver/main.dart
       # - run: flutter build apk
