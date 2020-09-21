@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "goodJob" : MessageLookupByLibrary.simpleMessage("Good Job"),
     "lap" : MessageLookupByLibrary.simpleMessage("ラップ"),
     "leftAndRight" : MessageLookupByLibrary.simpleMessage("左右"),
+    "logs" : MessageLookupByLibrary.simpleMessage("記録"),
     "name" : MessageLookupByLibrary.simpleMessage("名前"),
     "noName" : MessageLookupByLibrary.simpleMessage("無名"),
     "quickRun" : MessageLookupByLibrary.simpleMessage("クイックラン"),
@@ -40,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rest" : MessageLookupByLibrary.simpleMessage("レスト"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "time" : MessageLookupByLibrary.simpleMessage("タイム"),
+    "times" : MessageLookupByLibrary.simpleMessage("回"),
     "workout" : MessageLookupByLibrary.simpleMessage("ワークアウト"),
     "workouts" : MessageLookupByLibrary.simpleMessage("ワークアウト")
   };

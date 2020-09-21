@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import './l10n/l10n.dart';
 import './models/workout.dart';
+import './store/workout_store.dart';
 
 AudioCache _player = AudioCache();
 
@@ -105,7 +106,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
           default:
             lapIndex++;
             if (currentLap == null) {
-              timer.cancel();
+              _complete();
               return;
             }
             lapState = LapState.work;
@@ -114,6 +115,11 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         }
       }
     });
+  }
+
+  Future<void> _complete() async {
+    timer.cancel();
+    await saveDoneLog(workout);
   }
 
   void _pause() {

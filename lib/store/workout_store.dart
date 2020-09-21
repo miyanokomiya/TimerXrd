@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/done_log.dart';
 import '../models/workout.dart';
 
 const String configPrefix = 'config';
@@ -72,6 +73,7 @@ class WorkoutStore with ChangeNotifier {
   }
 
   Future<void> updateWorkspace(int id, Workout workout) async {
+    print(workout);
     final db = await getDataBase();
     await db.transaction((txn) async {
       await txn.update('Workout', workout.toMap(),
@@ -80,6 +82,7 @@ class WorkoutStore with ChangeNotifier {
           .delete('lap_item', where: 'workout_id = ?', whereArgs: [workout.id]);
       final batch = txn.batch();
       workout.lapItemList.asMap().entries.forEach((e) async {
+        print(e.value);
         final map = e.value.toMap();
         map['workout_id'] = workout.id;
         map['item_index'] = e.key;
@@ -104,6 +107,31 @@ class WorkoutStore with ChangeNotifier {
   }
 }
 
+Future<void> saveDoneLog(Workout workout) async {
+  final db = await getDataBase();
+  await db.transaction((txn) async {
+    final id =
+        await txn.insert('done_log', DoneLog.fromWorkout(workout).toMap());
+    final batch = txn.batch();
+    for (var e in workout.lapItemList) {
+      batch.insert('done_log_item', {
+        'done_log_id': id,
+        'lap_name': e.name,
+        'lap_time': e.time,
+      });
+    }
+    await batch.commit();
+  });
+}
+
+Future<List<DoneLog>> getDoneLogs(DateTime from, DateTime to) async {
+  final db = await getDataBase();
+  final List<Map> maps = await db.rawQuery('''
+    SELECT * FROM done_log WHERE ? <= created_at AND created_at < ? ORDER BY created_at DESC
+    ''', [from.toIso8601String(), to.toIso8601String()]);
+  return List.generate(maps.length, (i) => DoneLog.fromMap(maps[i]));
+}
+
 Database _database;
 
 Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -118,11 +146,10 @@ Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
 Future<Database> getDataBase() async {
   final databasesPath = await getDatabasesPath();
   final path = join(databasesPath, 'app.db');
-  // await deleteDatabase(path);
-
-  const version = 2;
+  const version = 3;
 
   if (_database != null) return _database;
+  // await deleteDatabase(path);
 
   final database = await openDatabase(
     join(path),
@@ -157,6 +184,36 @@ const Map<String, List<String>> scripts = {
   '2': [
     """
     ALTER TABLE lap_item ADD COLUMN is_left_and_right INTEGER DEFAULT 0;
+    """,
+  ],
+  '3': [
+    """
+    CREATE TABLE done_log(
+      id INTEGER PRIMARY KEY,
+      workout_name TEXT NOT NULL,
+      workout_total_time INTEGER NOT NULL,
+      created_at DATETIME NOT NULL
+    );
+    """,
+    """
+    CREATE INDEX done_log_workout_name ON done_log(workout_name);
+    """,
+    """
+    CREATE INDEX done_log_created_at ON done_log(created_at);
+    """,
+    """
+    CREATE TABLE done_log_item(
+      done_log_id INTEGER,
+      lap_name TEXT NOT NULL,
+      lap_time INTEGER NOT NULL,
+      FOREIGN KEY (done_log_id) REFERENCES done_log(id) ON UPDATE CASCADE ON DELETE CASCADE
+    );
+    """,
+    """
+    CREATE INDEX done_log_item_done_log_id ON done_log_item(done_log_id);
+    """,
+    """
+    CREATE INDEX done_log_item_lap_name ON done_log_item(lap_name);
     """,
   ],
 };

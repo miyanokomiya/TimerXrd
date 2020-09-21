@@ -100,6 +100,14 @@ class L10n {
         'Will you discard your changes?',
         name: 'confirmDiscardChanges',
       );
+  String get logs => Intl.message(
+    'Logs',
+    name: 'logs',
+  );
+  String get times => Intl.message(
+    'times',
+    name: 'times',
+  );
   String get configTitle => Intl.message(
     'Config',
     name: 'configTitle',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './config_page.dart';
 import './l10n/l10n.dart';
+import './done_log_list_page.dart';
 import './quickrun_page.dart';
 import './workout_list_page.dart';
 
@@ -14,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   final _pageWidgets = [
     WorkoutListPage(),
     QuickrunPage(),
+    DoneLogListPage(),
     ConfigPage(),
   ];
 
@@ -21,22 +23,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Timer Xrd'),
-      ),
       body: _pageWidgets.elementAt(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon: const Icon(Icons.playlist_add),
-              title: Text(L10n.of(context).workouts)),
+              icon: const Icon(Icons.playlist_add), title: Text(l10n.workouts)),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.timer),
-              title: Text(L10n.of(context).quickRun)),
+              icon: const Icon(Icons.timer), title: Text(l10n.quickRun)),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.settings),
-              title: Text(L10n.of(context).configTitle)),
+              icon: const Icon(Icons.done_all), title: Text(l10n.logs)),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.settings), title: Text(l10n.configTitle)),
         ],
         currentIndex: _currentIndex,
         fixedColor: Colors.blueAccent,

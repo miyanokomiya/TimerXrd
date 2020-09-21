@@ -34,6 +34,9 @@ class WorkoutListPage extends StatelessWidget {
     final workoutList = store.workoutList;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Timer Xrd'),
+      ),
       body: Center(
           child: ListView(
               children: workoutList

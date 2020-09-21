@@ -96,6 +96,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "logs": "記録",
+  "@logs": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "times": "回",
+  "@times": {
+    "type": "text",
+    "placeholders": {}
+  },
   "configTitle": "設定",
   "@configTitle": {
     "type": "text",

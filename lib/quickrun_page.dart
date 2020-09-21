@@ -50,19 +50,24 @@ class _QuickrunPageState extends State<QuickrunPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!ready && prefs == null) return Scaffold(body: Container());
+    if (!ready && prefs == null) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(L10n.of(context).quickRun),
+          ),
+          body: Container());
+    }
 
     final workoutConfig =
         context.select((WorkoutStore store) => store.workoutConfig);
     return Scaffold(
+        appBar: AppBar(
+          title: Text(L10n.of(context).quickRun),
+        ),
         body: Column(
           children: [
-            Container(
-                padding: const EdgeInsets.all(10),
-                child: Text(L10n.of(context).quickRun,
-                    style: const TextStyle(fontSize: 36))),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   Row(
