@@ -2,6 +2,7 @@ import 'package:TimerXrd/models/done_log.dart';
 import 'package:flutter/material.dart';
 import './l10n/l10n.dart';
 import './store/workout_store.dart';
+import './utils/datetime.dart';
 
 class DoneLogListPage extends StatefulWidget {
   @override
@@ -37,15 +38,6 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
           .reduce((value, element) => value + element)
       : 0;
 
-  String get totalTimeText {
-    final time = totalTime;
-    final h = (time / (60 * 60)).floor();
-    final m = ((time % (60 * 60)) / 60).floor();
-    final s = time % 60;
-    final hText = h > 0 ? '$h:' : '';
-    return '$hText${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
@@ -74,7 +66,8 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
                     width: 20,
                     alignment: Alignment.center,
                     child: const Text('/', style: TextStyle(fontSize: 20))),
-                Text(totalTimeText, style: const TextStyle(fontSize: 20)),
+                Text(formatSeconds(totalTime),
+                    style: const TextStyle(fontSize: 20)),
               ],
             ),
           ),
@@ -112,14 +105,4 @@ Widget getWorkLogItem(DoneLog doneLog) {
           ],
         )),
   );
-}
-
-String formatDateTime(DateTime d) {
-  final l = d.toLocal();
-  return '${l.month.toString().padLeft(2, '0')}/${l.day.toString().padLeft(2, '0')} ${l.hour.toString().padLeft(2, '0')}:${l.minute.toString().padLeft(2, '0')}';
-}
-
-String formatDate(DateTime d) {
-  final l = d.toLocal();
-  return '${l.month.toString().padLeft(2, '0')}/${l.day.toString().padLeft(2, '0')}';
 }

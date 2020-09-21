@@ -1,4 +1,5 @@
 import 'package:uuid/uuid.dart';
+import '../utils/datetime.dart';
 
 final Uuid uuid = Uuid();
 
@@ -42,12 +43,7 @@ class Workout {
     }).toList();
   }
 
-  String get totalTimeText {
-    final time = totalTime;
-    final m = (time / 60).floor();
-    final s = time % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
+  String get totalTimeText => formatSeconds(totalTime);
 
   Workout clone() {
     return Workout(
