@@ -24,9 +24,11 @@ class Workout {
     return list;
   }
 
-  int get totalTime => expandedLapItemList
-      .map((e) => e.time + e.rest)
-      .reduce((value, element) => value + element);
+  int get totalTime => expandedLapItemList.isEmpty
+      ? 0
+      : expandedLapItemList
+          .map((e) => e.time + e.rest)
+          .reduce((value, element) => value + element);
 
   List<int> get adjustedIndexList {
     var i = 0;

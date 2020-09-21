@@ -37,6 +37,15 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
           .reduce((value, element) => value + element)
       : 0;
 
+  String get totalTimeText {
+    final time = totalTime;
+    final h = (time / (60 * 60)).floor();
+    final m = ((time % (60 * 60)) / 60).floor();
+    final s = time % 60;
+    final hText = h > 0 ? '$h:' : '';
+    return '$hText${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
@@ -65,8 +74,7 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
                     width: 20,
                     alignment: Alignment.center,
                     child: const Text('/', style: TextStyle(fontSize: 20))),
-                Text('${(totalTime / 60).toStringAsFixed(1)} m',
-                    style: const TextStyle(fontSize: 20)),
+                Text(totalTimeText, style: const TextStyle(fontSize: 20)),
               ],
             ),
           ),
