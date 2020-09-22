@@ -104,21 +104,29 @@ class WorkoutStore with ChangeNotifier {
   }
 }
 
-Future<void> saveDoneLog(Workout workout) async {
+Future<DoneLog> saveDoneLog(Workout workout, {DateTime createdAt}) async {
   final db = await getDataBase();
+  final doneLog = DoneLog.fromWorkout(workout, createdAt: createdAt);
   await db.transaction((txn) async {
-    final id =
-        await txn.insert('done_log', DoneLog.fromWorkout(workout).toMap());
+    final id = await txn.insert(
+        'done_log', DoneLog.fromWorkout(workout, createdAt: createdAt).toMap());
+    doneLog.id = id;
     final batch = txn.batch();
-    for (final e in workout.lapItemList) {
+    for (int i = 0; i < workout.lapItemList.length; i++) {
+      final e = workout.lapItemList[i];
       batch.insert('done_log_item', {
         'done_log_id': id,
         'lap_name': e.name,
         'lap_time': e.time,
+        'item_index': i,
       });
     }
     await batch.commit();
   });
+  return doneLog
+    ..doneLogItems = workout.lapItemList
+        .map((e) => DoneLogItem.fromLapItem(doneLog.id, e))
+        .toList();
 }
 
 Future<List<DoneLog>> getDoneLogs(DateTime from, DateTime to) async {
@@ -129,7 +137,35 @@ Future<List<DoneLog>> getDoneLogs(DateTime from, DateTime to) async {
   return List.generate(maps.length, (i) => DoneLog.fromMap(maps[i]));
 }
 
+Future<DoneLog> getDoneLog(int doneLogId) async {
+  final db = await getDataBase();
+  final List<Map> maps = await db.query('done_log',
+      where: 'id = ?', whereArgs: [doneLogId], limit: 1);
+  if (maps.length != 1) {
+    throw Exception('Not found done_log: $doneLogId');
+  }
+  final doneLog = DoneLog.fromMap(maps[0]);
+  final List<Map> itemMaps = await db.query('done_log_item',
+      where: 'done_log_id = ?',
+      whereArgs: [doneLogId],
+      orderBy: 'item_index ASC');
+  return doneLog
+    ..doneLogItems = itemMaps.map((e) => DoneLogItem.fromMap(e)).toList();
+}
+
 Database _database;
+const filename = 'app.db';
+const version = 4;
+
+Future<void> deleteDB() async {
+  final databasesPath = await getDatabasesPath();
+  final path = join(databasesPath, filename);
+  await deleteDatabase(path);
+  if (_database != null) {
+    await _database.close();
+    _database = null;
+  }
+}
 
 Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
   for (var i = oldVersion + 1; i <= newVersion; i++) {
@@ -142,11 +178,9 @@ Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
 
 Future<Database> getDataBase() async {
   final databasesPath = await getDatabasesPath();
-  final path = join(databasesPath, 'app.db');
-  const version = 3;
+  final path = join(databasesPath, filename);
 
   if (_database != null) return _database;
-  // await deleteDatabase(path);
 
   final database = await openDatabase(
     join(path),
@@ -211,6 +245,11 @@ const Map<String, List<String>> scripts = {
     """,
     """
     CREATE INDEX done_log_item_lap_name ON done_log_item(lap_name);
+    """,
+  ],
+  '4': [
+    """
+    ALTER TABLE done_log_item ADD COLUMN item_index INTEGER DEFAULT 0;
     """,
   ],
 };
