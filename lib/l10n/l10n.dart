@@ -100,6 +100,10 @@ class L10n {
         'Will you discard your changes?',
         name: 'confirmDiscardChanges',
       );
+  String get confirmDeleteLog => Intl.message(
+    'Are you sure to delete this log?',
+    name: 'confirmDeleteLog',
+  );
   String get logs => Intl.message(
     'Logs',
     name: 'logs',

@@ -150,6 +150,11 @@ Future<DoneLog> getDoneLog(int doneLogId) async {
     ..doneLogItems = itemMaps.map((e) => DoneLogItem.fromMap(e)).toList();
 }
 
+Future<void> deleteDoneLog(int doneLogId) async {
+  final db = await getDataBase();
+  await db.delete('done_log', where: 'id = ?', whereArgs: [doneLogId]);
+}
+
 Database _database;
 const filename = 'app.db';
 const version = 4;

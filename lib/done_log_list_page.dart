@@ -74,20 +74,26 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
           ),
           Expanded(
               child: ListView(
-                  children:
-                      doneLogs.map((e) => getWorkLogItem(context, e)).toList()))
+                  children: doneLogs
+                      .map((e) =>
+                          getWorkLogItem(context, e, onDelete: loadDoneLogs))
+                      .toList()))
         ])));
   }
 }
 
-Widget getWorkLogItem(BuildContext context, DoneLog doneLog) {
+Widget getWorkLogItem(BuildContext context, DoneLog doneLog,
+    {@required void Function() onDelete}) {
   return Card(
       child: InkWell(
-    onTap: () {
-      Navigator.push(
+    onTap: () async {
+      final deleted = await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => DoneLogDetailPage(id: doneLog.id)));
+      if (deleted == true) {
+        onDelete();
+      }
     },
     child: Padding(
         padding: const EdgeInsets.all(8),

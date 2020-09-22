@@ -1,6 +1,6 @@
 {
   "@@locale": "messages",
-  "@@last_modified": "2020-09-21T21:59:15.191638",
+  "@@last_modified": "2020-09-22T16:34:08.010442",
   "ready": "Ready",
   "@ready": {
     "type": "text",
@@ -93,6 +93,11 @@
   },
   "confirmDiscardChanges": "Will you discard your changes?",
   "@confirmDiscardChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDeleteLog": "Are you sure to delete this log?",
+  "@confirmDeleteLog": {
     "type": "text",
     "placeholders": {}
   },

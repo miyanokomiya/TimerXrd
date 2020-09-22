@@ -10,7 +10,7 @@ void main() {
   group('saveDoneLog, getDoneLogs', () {
     test('save & get done logs', () async {
       final workout =
-      Workout(name: 'abc', lapItemList: [LapItem(name: 'lap 1')]);
+          Workout(name: 'abc', lapItemList: [LapItem(name: 'lap 1')]);
       final src = await saveDoneLog(workout);
       expect(src.id, 1);
       expect(src.doneLogItems.length, 1);
@@ -41,9 +41,10 @@ void main() {
 
   group('getDoneLog', () {
     test('get done log detail', () async {
-      final workout =
-      Workout(name: 'abc',
-          lapItemList: [LapItem(name: 'lap 1', time: 2, isLeftAndRight: true), LapItem(name: 'lap 2')]);
+      final workout = Workout(name: 'abc', lapItemList: [
+        LapItem(name: 'lap 1', time: 2, isLeftAndRight: true),
+        LapItem(name: 'lap 2')
+      ]);
       final src = await saveDoneLog(workout);
       final log = await getDoneLog(src.id);
       expect(log.workoutName, 'abc');
@@ -52,6 +53,20 @@ void main() {
       expect(log.doneLogItems[0].lapTime, 2);
       expect(log.doneLogItems[1].lapName, 'lap 1 R');
       expect(log.doneLogItems[2].lapName, 'lap 2');
+    });
+  });
+
+  group('deleteDoneLog', () {
+    test('delete done log and done log items', () async {
+      final workout =
+          Workout(name: 'abc', lapItemList: [LapItem(name: 'lap 1', time: 2)]);
+      final src = await saveDoneLog(workout);
+      await deleteDoneLog(src.id);
+      final db = await getDataBase();
+      final logs = await db.query('done_log');
+      expect(logs.length, 0);
+      final logItems = await db.query('done_log_item');
+      expect(logItems.length, 0);
     });
   });
 }

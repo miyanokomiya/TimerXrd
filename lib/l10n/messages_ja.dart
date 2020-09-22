@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "configHideTimer" : MessageLookupByLibrary.simpleMessage("タイマー非表示"),
     "configTitle" : MessageLookupByLibrary.simpleMessage("設定"),
+    "confirmDeleteLog" : MessageLookupByLibrary.simpleMessage("ログを削除しますか？"),
     "confirmDeleteWorkout" : MessageLookupByLibrary.simpleMessage("ワークアウトを削除しますか？"),
     "confirmDiscardChanges" : MessageLookupByLibrary.simpleMessage("変更を破棄しますか？"),
     "delete" : MessageLookupByLibrary.simpleMessage("削除"),
