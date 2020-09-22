@@ -36,4 +36,6 @@ jobs:
           api-level: ${{ matrix.api-level }}
           profile: pixel
           arch: x86_64
-          script: flutter driver --target=test_driver/main.dart
+          script: |
+            flutter driver --target=test_driver/main.dart >> tmp.txt
+            if cat tmp.txt | grep -q 'Some tests failed.'; then false; else true; fi
