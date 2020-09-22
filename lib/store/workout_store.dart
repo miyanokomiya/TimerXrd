@@ -157,7 +157,7 @@ Future<void> deleteDoneLog(int doneLogId) async {
 
 Database _database;
 const filename = 'app.db';
-const version = 4;
+const version = 5;
 
 Future<void> deleteDB() async {
   final databasesPath = await getDatabasesPath();
@@ -252,6 +252,11 @@ const Map<String, List<String>> scripts = {
   '4': [
     """
     ALTER TABLE done_log_item ADD COLUMN item_index INTEGER DEFAULT 0;
+    """,
+  ],
+  '5': [
+    """
+    ALTER TABLE done_log_item ADD COLUMN lap_rest INTEGER NOT NULL DEFAULT 0;
     """,
   ],
 };

@@ -38,5 +38,4 @@ jobs:
           arch: x86_64
           script: |
             flutter driver --target=test_driver/main.dart >> tmp.txt
-            cat tmp.txt
-            cat tmp.txt | grep 'Some tests failed.' >> /dev/stderr
+            cat tmp.txt | grep 'All tests passed!' | grep 'I/flutter'

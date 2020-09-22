@@ -46,23 +46,29 @@ class DoneLog {
 class DoneLogItem {
   String lapName;
   int lapTime;
+  int lapRest;
 
   DoneLogItem.fromMap(Map map) {
     lapName = map['lap_name'] as String;
     lapTime = map['lap_time'] as int;
+    lapRest = map['lap_rest'] as int;
   }
 
   DoneLogItem.fromLapItem(LapItem lapItem) {
     lapName = lapItem.name;
     lapTime = lapItem.time;
+    lapRest = lapItem.rest;
   }
 
   String get displayName => lapName == '' ? 'no name' : lapName;
+
+  int get lapTotalTime => lapTime + lapRest;
 
   Map<String, dynamic> toMap() {
     return {
       'lap_name': lapName,
       'lap_time': lapTime,
+      'lap_rest': lapRest,
     };
   }
 }

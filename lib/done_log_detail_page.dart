@@ -133,7 +133,7 @@ Widget getWorkLogItem(DoneLogItem doneLogItem) {
                 ],
               ),
             ),
-            Text('${doneLogItem.lapTime}s',
+            Text('${doneLogItem.lapTime}(${doneLogItem.lapRest})s',
                 style: const TextStyle(fontSize: 16)),
           ],
         )),

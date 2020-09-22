@@ -42,7 +42,7 @@ void main() {
   group('getDoneLog', () {
     test('get done log detail', () async {
       final workout = Workout(name: 'abc', lapItemList: [
-        LapItem(name: 'lap 1', time: 2, isLeftAndRight: true),
+        LapItem(name: 'lap 1', time: 2, rest: 3, isLeftAndRight: true),
         LapItem(name: 'lap 2')
       ]);
       final src = await saveDoneLog(workout);
@@ -51,6 +51,7 @@ void main() {
       expect(log.doneLogItems.length, 3);
       expect(log.doneLogItems[0].lapName, 'lap 1 L');
       expect(log.doneLogItems[0].lapTime, 2);
+      expect(log.doneLogItems[0].lapRest, 3);
       expect(log.doneLogItems[1].lapName, 'lap 1 R');
       expect(log.doneLogItems[2].lapName, 'lap 2');
     });
