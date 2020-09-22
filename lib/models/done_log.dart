@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
 import './workout.dart';
 
 class DoneLog {
@@ -43,18 +44,23 @@ class DoneLog {
 }
 
 class DoneLogItem {
-  int doneLogId;
   String lapName;
   int lapTime;
 
   DoneLogItem.fromMap(Map map) {
-    doneLogId = map['done_log_id'] as int;
     lapName = map['lap_name'] as String;
     lapTime = map['lap_time'] as int;
   }
 
-  DoneLogItem.fromLapItem(this.doneLogId, LapItem lapItem) {
+  DoneLogItem.fromLapItem(LapItem lapItem) {
     lapName = lapItem.name;
     lapTime = lapItem.time;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'lap_name': lapName,
+      'lap_time': lapTime,
+    };
   }
 }

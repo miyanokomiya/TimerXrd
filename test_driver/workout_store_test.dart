@@ -43,14 +43,15 @@ void main() {
     test('get done log detail', () async {
       final workout =
       Workout(name: 'abc',
-          lapItemList: [LapItem(name: 'lap 1', time: 2), LapItem(name: 'lap 2')]);
+          lapItemList: [LapItem(name: 'lap 1', time: 2, isLeftAndRight: true), LapItem(name: 'lap 2')]);
       final src = await saveDoneLog(workout);
       final log = await getDoneLog(src.id);
       expect(log.workoutName, 'abc');
-      expect(log.doneLogItems.length, 2);
-      expect(log.doneLogItems[0].lapName, 'lap 1');
+      expect(log.doneLogItems.length, 3);
+      expect(log.doneLogItems[0].lapName, 'lap 1 L');
       expect(log.doneLogItems[0].lapTime, 2);
-      expect(log.doneLogItems[1].lapName, 'lap 2');
+      expect(log.doneLogItems[1].lapName, 'lap 1 R');
+      expect(log.doneLogItems[2].lapName, 'lap 2');
     });
   });
 }

@@ -20,7 +20,7 @@ class Workout {
   List<LapItem> get expandedLapItemList {
     final List<LapItem> list = [];
     for (final lap in lapItemList) {
-      list.addAll(lap.expandLapItemList());
+      list.addAll(lap.expandLapItemList);
     }
     return list;
   }
@@ -126,11 +126,15 @@ class LapItem {
     return true;
   }
 
-  List<LapItem> expandLapItemList() {
+  List<LapItem> get expandLapItemList {
     final List<LapItem> list = [];
     if (isLeftAndRight) {
-      list.add(clone()..name += ' L');
-      list.add(clone()..name += ' R');
+      list.add(clone()
+        ..isLeftAndRight = false
+        ..name += ' L');
+      list.add(clone()
+        ..isLeftAndRight = false
+        ..name += ' R');
     } else {
       list.add(clone());
     }

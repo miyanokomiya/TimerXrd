@@ -112,21 +112,18 @@ Future<DoneLog> saveDoneLog(Workout workout, {DateTime createdAt}) async {
         'done_log', DoneLog.fromWorkout(workout, createdAt: createdAt).toMap());
     doneLog.id = id;
     final batch = txn.batch();
-    for (int i = 0; i < workout.lapItemList.length; i++) {
-      final e = workout.lapItemList[i];
-      batch.insert('done_log_item', {
-        'done_log_id': id,
-        'lap_name': e.name,
-        'lap_time': e.time,
-        'item_index': i,
-      });
+    final lapItemList = workout.expandedLapItemList;
+    for (int i = 0; i < lapItemList.length; i++) {
+      final e = DoneLogItem.fromLapItem(lapItemList[i]).toMap();
+      e['done_log_id'] = id;
+      e['item_index'] = i;
+      batch.insert('done_log_item', e);
     }
     await batch.commit();
   });
   return doneLog
-    ..doneLogItems = workout.lapItemList
-        .map((e) => DoneLogItem.fromLapItem(doneLog.id, e))
-        .toList();
+    ..doneLogItems =
+        workout.lapItemList.map((e) => DoneLogItem.fromLapItem(e)).toList();
 }
 
 Future<List<DoneLog>> getDoneLogs(DateTime from, DateTime to) async {
