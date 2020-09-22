@@ -57,6 +57,8 @@ class DoneLogItem {
     lapTime = lapItem.time;
   }
 
+  String get displayName => lapName == '' ? 'no name' : lapName;
+
   Map<String, dynamic> toMap() {
     return {
       'lap_name': lapName,

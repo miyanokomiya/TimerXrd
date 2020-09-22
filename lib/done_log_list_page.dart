@@ -1,5 +1,6 @@
 import 'package:TimerXrd/models/done_log.dart';
 import 'package:flutter/material.dart';
+import './done_log_detail_page.dart';
 import './l10n/l10n.dart';
 import './store/workout_store.dart';
 import './utils/datetime.dart';
@@ -73,13 +74,21 @@ class _DoneLogListPageState extends State<DoneLogListPage> {
           ),
           Expanded(
               child: ListView(
-                  children: doneLogs.map((e) => getWorkLogItem(e)).toList()))
+                  children:
+                      doneLogs.map((e) => getWorkLogItem(context, e)).toList()))
         ])));
   }
 }
 
-Widget getWorkLogItem(DoneLog doneLog) {
+Widget getWorkLogItem(BuildContext context, DoneLog doneLog) {
   return Card(
+      child: InkWell(
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoneLogDetailPage(id: doneLog.id)));
+    },
     child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -104,5 +113,5 @@ Widget getWorkLogItem(DoneLog doneLog) {
                 style: const TextStyle(fontSize: 16)),
           ],
         )),
-  );
+  ));
 }
