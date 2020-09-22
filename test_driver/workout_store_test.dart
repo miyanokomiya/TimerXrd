@@ -13,7 +13,7 @@ void main() {
           DateTime(now.year, now.month - 1, now.day).toUtc(),
           DateTime(now.year, now.month, now.day + 1).toUtc());
       expect(list.length, 1);
-      expect(list[0].workoutName, 'abc');
+      expect(list[0].workoutName, 'ab');
     });
   });
 }

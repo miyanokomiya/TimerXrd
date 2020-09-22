@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './config_page.dart';
-import './l10n/l10n.dart';
 import './done_log_list_page.dart';
+import './l10n/l10n.dart';
 import './quickrun_page.dart';
 import './workout_list_page.dart';
 
