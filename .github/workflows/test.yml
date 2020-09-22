@@ -39,4 +39,4 @@ jobs:
           script: |
             flutter driver --target=test_driver/main.dart >> tmp.txt
             cat tmp.txt
-            if cat tmp.txt | grep -q 'Some tests failed.'; then false; else true; fi
+            if [ "`cat tmp.txt | grep 'Some tests failed.'`" ]; then false; else true; fi
